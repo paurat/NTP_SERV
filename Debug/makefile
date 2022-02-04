@@ -62,7 +62,7 @@ main-build: UARTTTTTT.elf secondary-outputs
 
 # Tool invocations
 UARTTTTTT.elf: $(OBJS) $(USER_OBJS) D:\diplom\UARTTTTTT\STM32F746NGHX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "UARTTTTTT.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"D:\diplom\UARTTTTTT\STM32F746NGHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="UARTTTTTT.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "UARTTTTTT.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"D:\diplom\UARTTTTTT\STM32F746NGHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="UARTTTTTT.map" -Wl,--gc-sections -static  -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

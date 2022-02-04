@@ -221,15 +221,14 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  //Прерывания которые я не понимаю
 
 	  HAL_UART_Receive_IT (&huart7, (uint8_t*)&buff, 1);
 
 	  //HAL_UART_Receive(&huart7, (uint8_t*)RXstr, MESsize, 1000);
 	  //HAL_UART_Transmit(&huart6, (uint8_t*)str, 8, 1000);
 	  HAL_Delay(1000);
-	  //rtc_read();
-	  //printf("rtc_read=%lli\n",rtc_read);
+	  rtc_read();
+	  //printf("rtc_read=%llu\n",rtc_read());
 	  //HAL_Delay(1000);
     /* USER CODE END WHILE */
 
@@ -339,8 +338,8 @@ static void MX_RTC_Init(void)
 
   /** Initialize RTC and set the Time and Date
   */
-  sTime.Hours = 0x0;
-  sTime.Minutes = 0x0;
+  sTime.Hours = 0x23;
+  sTime.Minutes = 0x59;
   sTime.Seconds = 0x0;
   sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
   sTime.StoreOperation = RTC_STOREOPERATION_RESET;
@@ -348,9 +347,9 @@ static void MX_RTC_Init(void)
   {
     Error_Handler();
   }
-  sDate.WeekDay = RTC_WEEKDAY_WEDNESDAY;
-  sDate.Month = RTC_MONTH_FEBRUARY;
-  sDate.Date = 0x2;
+  sDate.WeekDay = RTC_WEEKDAY_MONDAY;
+  sDate.Month = RTC_MONTH_DECEMBER;
+  sDate.Date = 0x31;
   sDate.Year = 0x0;
 
   if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
@@ -1081,7 +1080,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 				gps.year[1]=time_buff[5];
 			}
 		}
-		printf("buff=%c\tcount=%d\tzpt=%d\tind=%d\tTipe_Mes=%d\n\r",buff[0],count,zpt,ind,Tipe_Mes);
+	    //printf("buff=%c\tcount=%d\tzpt=%d\tind=%d\tTipe_Mes=%d\n\r",buff[0],count,zpt,ind,Tipe_Mes);
 		//printf("crc_hx=%s\t crc=%d\t crc_buff=%s\t dec=%d\n\r",crc_hx,crc,crc_buff,dec);
 		dataReceived=1;
 
@@ -1177,31 +1176,31 @@ char calc_crc(char c,int cnt){
 	return 0;
 }
 
-//time_t rtc_read(void) {
-//	RTC_DateTypeDef dateStruct;
-//	RTC_TimeTypeDef timeStruct;
-//	struct tm timeinfo;
-//
-//	hrtc.Instance = RTC;
-//
-//	// Read actual date and time
-//	HAL_RTC_GetTime(&hrtc, &timeStruct, FORMAT_BIN); // Read time first!
-//	HAL_RTC_GetDate(&hrtc, &dateStruct, FORMAT_BIN);
-//
-//	// Setup a tm structure based on the RTC
-//	timeinfo.tm_wday = dateStruct.WeekDay;
-//	timeinfo.tm_mon = dateStruct.Month - 1;
-//	timeinfo.tm_mday = dateStruct.Date;
-//	timeinfo.tm_year = dateStruct.Year + 100;
-//	timeinfo.tm_hour = timeStruct.Hours;
-//	timeinfo.tm_min = timeStruct.Minutes;
-//	timeinfo.tm_sec = timeStruct.Seconds;
-//
-//	// Convert to timestamp
-//	time_t t = mktime(&timeinfo);
-//
-//	return t;
-//}
+time_t rtc_read(void) {
+	RTC_DateTypeDef dateStruct;
+	RTC_TimeTypeDef timeStruct;
+	struct tm timeinfo;
+
+	hrtc.Instance = RTC;
+
+	// Read actual date and time
+	HAL_RTC_GetTime(&hrtc, &timeStruct, FORMAT_BIN); // Read time first!
+	HAL_RTC_GetDate(&hrtc, &dateStruct, FORMAT_BIN);
+
+	// Setup a tm structure based on the RTC
+	timeinfo.tm_wday = dateStruct.WeekDay;
+	timeinfo.tm_mon = dateStruct.Month ;//-1 do January==0 month
+	timeinfo.tm_mday = dateStruct.Date;
+	timeinfo.tm_year = dateStruct.Year + 2022;
+	timeinfo.tm_hour = timeStruct.Hours;
+	timeinfo.tm_min = timeStruct.Minutes;
+	timeinfo.tm_sec = timeStruct.Seconds;
+	printf("tm_year=%d\t gps_year=%c\n",timeinfo.tm_year,gps.year[0]);
+	// Convert to timestamp
+	time_t t = mktime(&timeinfo);
+
+	return t;
+}
 /* USER CODE END 4 */
 
  /**
