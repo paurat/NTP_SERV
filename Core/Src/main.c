@@ -80,7 +80,7 @@ int _write(int file, char *ptr,int len){
 int ERRORS=0;
 int Tipe_Mes=0;// 1-ZDA  2-RMC
 int Test=0;
-long long int G=0;
+long long int gps_unix=0;
 int zpt=0;
 int start_crc=0;
 int z=0;
@@ -337,21 +337,21 @@ static void MX_RTC_Init(void)
 
   /** Initialize RTC and set the Time and Date
   */
-  sTime.Hours = 0x23;
-  sTime.Minutes = 0x59;
-  sTime.Seconds = 0x0;
+  sTime.Hours = 23;
+  sTime.Minutes = 59;
+  sTime.Seconds = 0;
   sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
   sTime.StoreOperation = RTC_STOREOPERATION_RESET;
-  if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
+  if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN) != HAL_OK)
   {
     Error_Handler();
   }
   sDate.WeekDay = RTC_WEEKDAY_SUNDAY;
   sDate.Month = RTC_MONTH_DECEMBER;
-  sDate.Date = 0x31;
-  sDate.Year = 0x0;
+  sDate.Date = 31;
+  sDate.Year = 0;
 
-  if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
+  if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN) != HAL_OK)
   {
     Error_Handler();
   }
@@ -949,6 +949,8 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+	RTC_TimeTypeDef sTime = {0};
+	RTC_DateTypeDef sDate = {0};
 	if(huart == &huart7) {
 		//$ message start
 		if(buff[0]=='$'){
@@ -964,7 +966,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 		//CRC calculation
 		int res = calc_crc(buff[0],count);
-		if(res){
+		if(res==1){
 			//printf("crc=%d\t crc_buff=%s\t dec=%d\n\r",crc,crc_buff,dec);
 			//RTC READ
 			rtc_read();
@@ -974,18 +976,39 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 			Time_calc.tm_mon = atoi(gps.month)-1;//-1 do January==0 month
 			Time_calc.tm_mday = atoi(gps.day);
 			if(year_str[0]=='0'&&year_str[1]=='0'){
-			century=century+100;//atoi(gps.year)
+				century=century+100;//atoi(gps.year)
 			}
 			Time_calc.tm_year = atoi(year_str) + century;
 			Time_calc.tm_hour = atoi(gps.hours);
 			Time_calc.tm_min = atoi(gps.minuttes);
 			Time_calc.tm_sec = atoi(gps.seconds);
-			G = mktime(&Time_calc);
-		    //printf("tm_year=%d\t tm_mon=%d\t tm_mday=%d\t tm_hour=%d\t tm_min=%d\t tm_sec=%d\n",Time_calc.tm_year,Time_calc.tm_mon,Time_calc.tm_mday,Time_calc.tm_hour,Time_calc.tm_min,Time_calc.tm_sec);
-			printf("Time_calc=%llu\n",G);
+			gps_unix = mktime(&Time_calc);
+			//printf("tm_year=%d\t tm_mon=%d\t tm_mday=%d\t tm_hour=%d\t tm_min=%d\t tm_sec=%d\n",Time_calc.tm_year,Time_calc.tm_mon,Time_calc.tm_mday,Time_calc.tm_hour,Time_calc.tm_min,Time_calc.tm_sec);
+			printf("rtc_read=%llu\t Time_calc=%llu\n",rtc_read(),gps_unix);
 
 		}
+		if(res==1&&gps_unix!=rtc_read()){
 
+			sTime.Hours = Time_calc.tm_hour;
+			sTime.Minutes = Time_calc.tm_min;
+			sTime.Seconds = Time_calc.tm_sec;
+			sTime.StoreOperation = RTC_STOREOPERATION_RESET;
+			if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN) != HAL_OK)
+			{
+				Error_Handler();
+			}
+			sDate.Month = Time_calc.tm_mon;
+			sDate.Date = Time_calc.tm_mday;
+			sDate.Year = Time_calc.tm_year-century;
+
+			if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN) != HAL_OK)
+			{
+				Error_Handler();
+			}
+
+
+		}
+		printf("rtc_read=%llu\t Time_calc=%llu\n",rtc_read(),gps_unix);
 
 		//ZDA OR RMC
 		if (count==3&&buff[0]=='Z'){
@@ -1218,7 +1241,7 @@ time_t rtc_read(void) {
 	timeinfo.tm_wday = dateStruct.WeekDay;
 	timeinfo.tm_mon = dateStruct.Month;//-1 do January==0 month
 	timeinfo.tm_mday = dateStruct.Date;
-	timeinfo.tm_year = dateStruct.Year + 122;
+	timeinfo.tm_year = dateStruct.Year + 100;
 	timeinfo.tm_hour = timeStruct.Hours;
 	timeinfo.tm_min = timeStruct.Minutes;
 	timeinfo.tm_sec = timeStruct.Seconds;
