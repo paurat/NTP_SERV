@@ -77,36 +77,38 @@ int _write(int file, char *ptr,int len){
 }
 
 	 //string, counts and two smoking errors
-     int ERRORS=0;
-     int Tipe_Mes=0;// 1-ZDA  2-RMC
-     int Test=0;
-     long long int G=0;
-     int zpt=0;
-     int start_crc=0;
-     int z=0;
-     int ind=0;
-     int crc=0;
-	 int count=0;
-     int dec;
-	 int crc_pars=0;
-	 char time_buff[9]={0};
-	 char crc_buff[3]={0};
-	 char buff[1]={0};
-	 int dataReceived=1;
-	 int dataTransmitted=1;
-	 	 struct Time_rx
-	 	 {
-	 	     char day[2];
-	 	     char month[2];
-	 	     char year[4];
-	 	     char hours[2];
-	 	     char minuttes[2];
-	 	     char seconds[5];
-	 	     char errors;
-	 	     char sinc;
-	 	 };
+int ERRORS=0;
+int Tipe_Mes=0;// 1-ZDA  2-RMC
+int Test=0;
+long long int G=0;
+int zpt=0;
+int start_crc=0;
+int z=0;
+int ind=0;
+int crc=0;
+int count=0;
+int dec;
+int crc_pars=0;
+char time_buff[9]={0};
+char crc_buff[3]={0};
+char buff[1]={0};
+int dataReceived=1;
+int dataTransmitted=1;
+char year_str[2]={0};
+int century=100;
 
-	 	 struct tm Time_calc;
+struct Time_rx
+{
+	char day[3];
+	char month[3];
+	char year[5];
+	char hours[3];
+	char minuttes[3];
+	char seconds[6];
+	char errors[2];
+	char sinc[2];
+};
+struct tm Time_calc;
 struct Time_rx gps;
 /* USER CODE END 0 */
 
@@ -117,6 +119,8 @@ struct Time_rx gps;
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+
+	memset(gps.day,0,sizeof(gps));
 	// ZDA-38;RMC-68
 	 //включение ZDA
 	 char MESZDA[]={0xB5, 0x62, 0x06, 0x01, 0x08, 0x00, 0xF0, 0x08, 0x01, 0x01, 0x00, 0x01, 0x01, 0x00, 0x0B, 0x6B};
@@ -211,11 +215,6 @@ int main(void)
   HAL_Delay(100);
   HAL_UART_Transmit(&huart7,(uint8_t*) CONRMC, 10, 1000);
   HAL_Delay(100);
-
-
-  //Прерывания которые я не понимаю
-
- // HAL_UART_Receive_IT (&huart7, (uint8_t*)&buff, 1);
 
   /* USER CODE END 2 */
 
@@ -347,7 +346,7 @@ static void MX_RTC_Init(void)
   {
     Error_Handler();
   }
-  sDate.WeekDay = RTC_WEEKDAY_MONDAY;
+  sDate.WeekDay = RTC_WEEKDAY_SUNDAY;
   sDate.Month = RTC_MONTH_DECEMBER;
   sDate.Date = 0x31;
   sDate.Year = 0x0;
@@ -967,21 +966,25 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 		int res = calc_crc(buff[0],count);
 		if(res){
 			//printf("crc=%d\t crc_buff=%s\t dec=%d\n\r",crc,crc_buff,dec);
-		}
+			//RTC READ
+			rtc_read();
+			//printf("rtc_read=%llu\t",rtc_read());
+			//comparison RTC&CRC
+			//Time_calc.tm_wday = 1;//atoi(gps.);
+			Time_calc.tm_mon = atoi(gps.month)-1;//-1 do January==0 month
+			Time_calc.tm_mday = atoi(gps.day);
+			if(year_str[0]=='0'&&year_str[1]=='0'){
+			century=century+100;//atoi(gps.year)
+			}
+			Time_calc.tm_year = atoi(year_str) + century;
+			Time_calc.tm_hour = atoi(gps.hours);
+			Time_calc.tm_min = atoi(gps.minuttes);
+			Time_calc.tm_sec = atoi(gps.seconds);
+			G = mktime(&Time_calc);
+		    //printf("tm_year=%d\t tm_mon=%d\t tm_mday=%d\t tm_hour=%d\t tm_min=%d\t tm_sec=%d\n",Time_calc.tm_year,Time_calc.tm_mon,Time_calc.tm_mday,Time_calc.tm_hour,Time_calc.tm_min,Time_calc.tm_sec);
+			printf("Time_calc=%llu\n",G);
 
-		//RTC READ
-		rtc_read();
-		//printf("rtc_read=%llu\t",rtc_read());
-		//comparison RTC&CRC
-		//Time_calc.tm_wday = atoi(gps.);
-		Time_calc.tm_mon = atoi(gps.month);//-1 do January==0 month
-		Time_calc.tm_mday = atoi(gps.day);
-		Time_calc.tm_year = atoi(gps.year) + 100;
-		Time_calc.tm_hour = atoi(gps.hours);
-		Time_calc.tm_min = atoi(gps.minuttes);
-		Time_calc.tm_sec = atoi(gps.seconds);
-		G = mktime(&Time_calc);
-		printf("Time_calc=%llu\n",G);
+		}
 
 
 		//ZDA OR RMC
@@ -1045,6 +1048,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 				gps.year[1]=time_buff[1];
 				gps.year[2]=time_buff[2];
 				gps.year[3]=time_buff[3];
+				year_str[0]=time_buff[2];
+				year_str[1]=time_buff[3];
 			}
 		}
 
@@ -1082,7 +1087,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 				ind++;
 			}
 			if(zpt==3&&buff[0]==','){
-				gps.sinc=time_buff[0];
+				gps.sinc[1]=time_buff[0];
 			}
 
 			if(zpt==9&&buff[0]!=','){
@@ -1097,6 +1102,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 				gps.month[1]=time_buff[3];
 				gps.year[0]=time_buff[4];
 				gps.year[1]=time_buff[5];
+				year_str[0]=time_buff[4];
+				year_str[1]=time_buff[5];
 			}
 		}
 		//printf("buff=%c\tcount=%d\tzpt=%d\tind=%d\tTipe_Mes=%d\n\r",buff[0],count,zpt,ind,Tipe_Mes);
@@ -1112,7 +1119,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 		}
 
 		HAL_UART_Receive_IT (&huart7, (uint8_t *)buff, 1);
-		gps.errors=ERRORS;
+		gps.errors[1]=ERRORS;
 		count++;
 	}
 }
@@ -1207,19 +1214,24 @@ time_t rtc_read(void) {
 	HAL_RTC_GetDate(&hrtc, &dateStruct, FORMAT_BIN);
 
 	// Setup a tm structure based on the RTC
+	// monday==1 sunday==7
 	timeinfo.tm_wday = dateStruct.WeekDay;
 	timeinfo.tm_mon = dateStruct.Month;//-1 do January==0 month
 	timeinfo.tm_mday = dateStruct.Date;
-	timeinfo.tm_year = dateStruct.Year + 100;
+	timeinfo.tm_year = dateStruct.Year + 122;
 	timeinfo.tm_hour = timeStruct.Hours;
 	timeinfo.tm_min = timeStruct.Minutes;
 	timeinfo.tm_sec = timeStruct.Seconds;
-	//printf("tm_year=%d\t gps_year=%c\n",timeinfo.tm_year,gps.year[0]);
+	//printf("tm_wday=%d\t\n",timeinfo.tm_wday);
+
 	// Convert to timestamp
 	time_t t = mktime(&timeinfo);
 
 	return t;
 }
+
+
+
 /* USER CODE END 4 */
 
  /**
