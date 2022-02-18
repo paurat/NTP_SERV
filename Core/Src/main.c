@@ -29,6 +29,7 @@
 #include "stdlib.h"
 #include <math.h>
 #include "time.h"
+#include <api.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -53,6 +54,7 @@ UART_HandleTypeDef huart7;
 UART_HandleTypeDef huart6;
 
 osThreadId defaultTaskHandle;
+osThreadId ECHOHandle;
 /* USER CODE BEGIN PV */
 time_t rtc_read(void);
 char calc_crc(char c,int cnt);
@@ -66,6 +68,7 @@ static void MX_USART6_UART_Init(void);
 static void MX_UART7_Init(void);
 static void MX_RTC_Init(void);
 void StartDefaultTask(void const * argument);
+void EchoFunction(void const * argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -244,6 +247,9 @@ int main(void)
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
+  /* definition and creation of ECHO */
+
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -257,12 +263,6 @@ int main(void)
   while (1)
   {
 
-//	  HAL_UART_Receive_IT (&huart7, (uint8_t*)&buff, 1);
-//
-//	  //HAL_UART_Receive(&huart7, (uint8_t*)RXstr, MESsize, 1000);
-//	  //HAL_UART_Transmit(&huart6, (uint8_t*)str, 8, 1000);
-//	  HAL_Delay(1000);
-//	  //HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -994,7 +994,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 			Time_calc.tm_sec = atoi(gps.seconds);
 			gps_unix = mktime(&Time_calc);
 			//printf("tm_year=%d\t tm_mon=%d\t tm_mday=%d\t tm_hour=%d\t tm_min=%d\t tm_sec=%d\n",Time_calc.tm_year,Time_calc.tm_mon,Time_calc.tm_mday,Time_calc.tm_hour,Time_calc.tm_min,Time_calc.tm_sec);
-			printf("rtc_read=%llu\t Time_calc=%llu\n",rtc_read(),gps_unix);
+			//printf("rtc_read=%llu\t Time_calc=%llu\n",rtc_read(),gps_unix);
 
 		}
 		if(res==1&&gps_unix!=rtc_read()){
@@ -1018,7 +1018,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 
 		}
-		printf("rtc_read=%llu\t Time_calc=%llu\n",rtc_read(),gps_unix);
+		//printf("rtc_read=%llu\t Time_calc=%llu\n",rtc_read(),gps_unix);
 
 		//ZDA OR RMC
 		if (count==3&&buff[0]=='Z'){
@@ -1276,9 +1276,9 @@ time_t rtc_read(void) {
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void const * argument)
 {
-	/* init code for LWIP */
-	MX_LWIP_Init();
-	/* USER CODE BEGIN 5 */
+  /* init code for LWIP */
+  MX_LWIP_Init();
+  /* USER CODE BEGIN 5 */
 	/* Infinite loop */
 	for(;;)
 	{
@@ -1290,7 +1290,40 @@ void StartDefaultTask(void const * argument)
 		//HAL_Delay(1000);
 		osDelay(1);
 	}
-	/* USER CODE END 5 */
+  /* USER CODE END 5 */
+}
+
+/* USER CODE BEGIN Header_EchoFunction */
+/**
+* @brief Function implementing the ECHO thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_EchoFunction */
+void EchoFunction(void const * argument)
+{
+	/* USER CODE BEGIN EchoFunction */
+	struct netconn *conn;
+	struct netconn * in_nc;
+	struct netbuf *buf;
+	err_t err;
+	uint16_t buf_data_len;
+
+	conn = netconn_new(NETCONN_TCP);
+	if(conn == NULL)
+	{
+		printf("error");
+	}
+	netconn_bind(conn, IP_ADDR_ANY, 123);
+	netconn_listen(conn);
+	/* Infinite loop */
+	for(;;)
+	{
+		netconn_accept(conn,&in_nc);
+		osThreadDef(ECHO, EchoFunction, osPriorityIdle, 0, 128);
+		ECHOHandle = osThreadCreate(osThread(ECHO), (void*)in_nc);
+	}
+	/* USER CODE END EchoFunction */
 }
 
  /**
