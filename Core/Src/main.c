@@ -257,12 +257,12 @@ int main(void)
   while (1)
   {
 
-	  HAL_UART_Receive_IT (&huart7, (uint8_t*)&buff, 1);
-
-	  //HAL_UART_Receive(&huart7, (uint8_t*)RXstr, MESsize, 1000);
-	  //HAL_UART_Transmit(&huart6, (uint8_t*)str, 8, 1000);
-	  HAL_Delay(1000);
-	  //HAL_Delay(1000);
+//	  HAL_UART_Receive_IT (&huart7, (uint8_t*)&buff, 1);
+//
+//	  //HAL_UART_Receive(&huart7, (uint8_t*)RXstr, MESsize, 1000);
+//	  //HAL_UART_Transmit(&huart6, (uint8_t*)str, 8, 1000);
+//	  HAL_Delay(1000);
+//	  //HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -1276,15 +1276,21 @@ time_t rtc_read(void) {
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void const * argument)
 {
-  /* init code for LWIP */
-  MX_LWIP_Init();
-  /* USER CODE BEGIN 5 */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END 5 */
+	/* init code for LWIP */
+	MX_LWIP_Init();
+	/* USER CODE BEGIN 5 */
+	/* Infinite loop */
+	for(;;)
+	{
+		HAL_UART_Receive_IT (&huart7, (uint8_t*)&buff, 1);
+
+		//HAL_UART_Receive(&huart7, (uint8_t*)RXstr, MESsize, 1000);
+		//HAL_UART_Transmit(&huart6, (uint8_t*)str, 8, 1000);
+		HAL_Delay(1000);
+		//HAL_Delay(1000);
+		osDelay(1);
+	}
+	/* USER CODE END 5 */
 }
 
  /**
