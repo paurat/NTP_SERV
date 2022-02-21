@@ -29,7 +29,8 @@
 #include "stdlib.h"
 #include <math.h>
 #include "time.h"
-#include <api.h>
+#include "lwip/api.h"
+#include "lwip/netif.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -54,7 +55,7 @@ UART_HandleTypeDef huart7;
 UART_HandleTypeDef huart6;
 
 osThreadId defaultTaskHandle;
-osThreadId ECHOHandle;
+osThreadId myTask02Handle;
 /* USER CODE BEGIN PV */
 time_t rtc_read(void);
 char calc_crc(char c,int cnt);
@@ -68,7 +69,7 @@ static void MX_USART6_UART_Init(void);
 static void MX_UART7_Init(void);
 static void MX_RTC_Init(void);
 void StartDefaultTask(void const * argument);
-void EchoFunction(void const * argument);
+void StartEchoTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -118,6 +119,7 @@ struct Time_rx
 };
 struct tm Time_calc;
 struct Time_rx gps;
+volatile char ready = 0;
 /* USER CODE END 0 */
 
 /**
@@ -247,7 +249,6 @@ int main(void)
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
-  /* definition and creation of ECHO */
 
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -1279,6 +1280,9 @@ void StartDefaultTask(void const * argument)
   /* init code for LWIP */
   MX_LWIP_Init();
   /* USER CODE BEGIN 5 */
+  /* definition and creation of myTask02 */
+    osThreadDef(myTask02, StartEchoTask, osPriorityIdle, 0, 128);
+    myTask02Handle = osThreadCreate(osThread(myTask02), NULL);
 	/* Infinite loop */
 	for(;;)
 	{
@@ -1288,42 +1292,70 @@ void StartDefaultTask(void const * argument)
 		//HAL_UART_Transmit(&huart6, (uint8_t*)str, 8, 1000);
 		HAL_Delay(1000);
 		//HAL_Delay(1000);
-		osDelay(1);
 	}
   /* USER CODE END 5 */
 }
 
-/* USER CODE BEGIN Header_EchoFunction */
+/* USER CODE BEGIN Header_StartEchoTask */
 /**
-* @brief Function implementing the ECHO thread.
+* @brief Function implementing the myTask02 thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_EchoFunction */
-void EchoFunction(void const * argument)
+/* USER CODE END Header_StartEchoTask */
+void StartEchoTask(void const * argument)
 {
-	/* USER CODE BEGIN EchoFunction */
-	struct netconn *conn;
-	struct netconn * in_nc;
+	/* USER CODE BEGIN StartEchoTask */
+	struct netconn *conn, *newconn;
+	err_t err, accept_err;
 	struct netbuf *buf;
-	err_t err;
-	uint16_t buf_data_len;
+	void *data;
+	u16_t len;
 
-	conn = netconn_new(NETCONN_TCP);
-	if(conn == NULL)
+	LWIP_UNUSED_ARG(argument);
+
+	conn = netconn_new(NETCONN_TCP); //new tcp netconn
+
+	if (conn != NULL)
 	{
-		printf("error");
+		err = netconn_bind(conn, IP_ADDR_ANY, 23); //bind to port 123
+		if (err == ERR_OK)
+		{
+			netconn_listen(conn); //listen at port 123
+			while (1)
+			{
+				accept_err = netconn_accept(conn, &newconn); //accept new connection
+				if (accept_err == ERR_OK) //accept ok
+				{
+					while (netconn_recv(newconn, &buf) == ERR_OK) //receive data
+					{
+						do
+						{
+							netbuf_data(buf, &data, &len); //receive data pointer & length
+							netconn_write(newconn, data, len, NETCONN_COPY); //echo back to the client
+							printf("HELP,SOS,Aiut,Hilfe,pomoci");
+						}
+						while (netbuf_next(buf) >= 0); //check buffer empty
+
+						netbuf_delete(buf); //clear buffer
+					}
+					netconn_close(newconn); //close session
+					netconn_delete(newconn); //free memory
+				}
+			}
+
+		}
+		else
+		{
+			netconn_delete(newconn); //free memory
+		}
+		/* Infinite loop */
+		//	for(;;)
+		//	{
+		//
+		//	}
+		/* USER CODE END StartEchoTask */
 	}
-	netconn_bind(conn, IP_ADDR_ANY, 123);
-	netconn_listen(conn);
-	/* Infinite loop */
-	for(;;)
-	{
-		netconn_accept(conn,&in_nc);
-		osThreadDef(ECHO, EchoFunction, osPriorityIdle, 0, 128);
-		ECHOHandle = osThreadCreate(osThread(ECHO), (void*)in_nc);
-	}
-	/* USER CODE END EchoFunction */
 }
 
  /**
