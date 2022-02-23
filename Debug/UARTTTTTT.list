@@ -37,13 +37,13 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_macro  00038b5f  00000000  00000000  000981b0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00038eab  00000000  00000000  000d0d0f  2**0
+ 17 .debug_line   00038ea7  00000000  00000000  000d0d0f  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    0011f1a3  00000000  00000000  00109bba  2**0
+ 18 .debug_str    0011f1a3  00000000  00000000  00109bb6  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000053  00000000  00000000  00228d5d  2**0
+ 19 .comment      00000053  00000000  00000000  00228d59  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  0000af38  00000000  00000000  00228db0  2**2
+ 20 .debug_frame  0000af38  00000000  00000000  00228dac  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1626,7 +1626,7 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
+  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 2);
  80011b8:	4b19      	ldr	r3, [pc, #100]	; (8001220 <main+0x26c>)
  80011ba:	463c      	mov	r4, r7
  80011bc:	461d      	mov	r5, r3
@@ -4829,12 +4829,12 @@ void StartDefaultTask(void const * argument)
  80025ee:	b08a      	sub	sp, #40	; 0x28
  80025f0:	af00      	add	r7, sp, #0
  80025f2:	6078      	str	r0, [r7, #4]
-  /* init code for LWIP */
-  MX_LWIP_Init();
+	/* init code for LWIP */
+	MX_LWIP_Init();
  80025f4:	f005 f978 	bl	80078e8 <MX_LWIP_Init>
-  /* USER CODE BEGIN 5 */
-  /* definition and creation of myTask02 */
-    osThreadDef(myTask02, StartEchoTask, osPriorityIdle, 0, 128);
+	/* USER CODE BEGIN 5 */
+	/* definition and creation of myTask02 */
+	osThreadDef(myTask02, StartEchoTask, osPriorityIdle, 0, 128);
  80025f8:	4b0e      	ldr	r3, [pc, #56]	; (8002634 <StartDefaultTask+0x48>)
  80025fa:	f107 040c 	add.w	r4, r7, #12
  80025fe:	461d      	mov	r5, r3
@@ -4842,7 +4842,7 @@ void StartDefaultTask(void const * argument)
  8002602:	c40f      	stmia	r4!, {r0, r1, r2, r3}
  8002604:	e895 0007 	ldmia.w	r5, {r0, r1, r2}
  8002608:	e884 0007 	stmia.w	r4, {r0, r1, r2}
-    myTask02Handle = osThreadCreate(osThread(myTask02), NULL);
+	myTask02Handle = osThreadCreate(osThread(myTask02), NULL);
  800260c:	f107 030c 	add.w	r3, r7, #12
  8002610:	2100      	movs	r1, #0
  8002612:	4618      	mov	r0, r3
