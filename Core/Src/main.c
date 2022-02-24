@@ -69,7 +69,7 @@ static void MX_USART6_UART_Init(void);
 static void MX_UART7_Init(void);
 static void MX_RTC_Init(void);
 void StartDefaultTask(void const * argument);
-void tcpecho_thread(void const * argument);
+void tcpecho_thread(void * argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -248,11 +248,6 @@ int main(void)
   /* definition and creation of defaultTask */
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
-
-  /* definition and creation of myTask02 */
-  osThreadDef(myTask02, tcpecho_thread, osPriorityIdle, 0, 128);
-  myTask02Handle = osThreadCreate(osThread(myTask02), NULL);
-
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -1266,8 +1261,10 @@ time_t rtc_read(void) {
 	return t;
 }
 
-
-
+void tcpecho_init(void)
+{
+	sys_thread_new("tcpecho_thread", tcpecho_thread, NULL,DEFAULT_THREAD_STACKSIZE, 1);
+}
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_StartDefaultTask */
@@ -1284,11 +1281,7 @@ void StartDefaultTask(void const * argument)
   /* USER CODE BEGIN 5 */
 	/* Initialize tcp echo server */
 	tcpecho_init();
-	void tcpecho_init(void)
-	{
-		sys_thread_new("tcpecho_thread", tcpecho_thread, NULL,
-		DEFAULT_THREAD_STACKSIZE, tcpecho_thread);
-	}
+
 	/* Infinite loop */
 	for(;;)
 	{
@@ -1309,13 +1302,13 @@ void StartDefaultTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_tcpecho_thread */
-void tcpecho_thread(void const * argument)
+void tcpecho_thread(void * argument)
 {
-	  struct netconn *conn,*newconn;
-	  struct netbuf *buf;
-	  err_t err, accept_err,recv_err;
-
-	  uint16_t *data,*len;
+	struct netconn *conn, *newconn;
+	err_t err, accept_err,recv_err;
+	struct netbuf *buf;
+	void *data;
+	u16_t len;
 	/* Create a new connection identifier. */
 	conn = netconn_new(NETCONN_TCP);
 	if (conn!=NULL)
@@ -1328,9 +1321,11 @@ void tcpecho_thread(void const * argument)
 			netconn_listen(conn);
 			while (1)
 			{
+				/* Grab new connection. */
+				accept_err = netconn_accept(conn, &newconn);
 
-				accept_err = netconn_accept(conn, &newconn); //accept new connection
-				if (accept_err == ERR_OK) //accept ok
+				/* Process the new connection. */
+				if (accept_err == ERR_OK)
 				{
 					while (( recv_err = netconn_recv(newconn, &buf)) == ERR_OK)
 					{
@@ -1355,7 +1350,7 @@ void tcpecho_thread(void const * argument)
 		}
 	}
 }
- /**
+/**
   * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM6 interrupt took place, inside
   * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
