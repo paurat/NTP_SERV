@@ -35,6 +35,11 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+#define __NTPD_H__
+#define NTP_MS_TO_FS_U32  (4294967296.0 / 1000.0)
+#define NTP_MS_TO_FS_U16  (65536.0 / 1000.0)
+/* Number of seconds between 1970 and Feb 7, 2036 06:28:16 UTC (epoch 1) */
+#define DIFF_SEC_1970_2036          ((uint32_t)2085978496L)
 
 /* USER CODE END PTD */
 
@@ -119,7 +124,53 @@ struct Time_rx
 };
 struct tm Time_calc;
 struct Time_rx gps;
-volatile char ready = 0;
+
+typedef struct
+{
+	uint8_t li_vn_mode;
+
+	uint8_t stratum;
+	uint8_t poll;
+	uint8_t precision;
+
+	uint32_t rootDelay;
+
+	uint16_t rootDispersion_s;
+	uint16_t rootDispersion_f;
+
+	uint32_t refId;
+
+	uint32_t refTm_s;
+	uint32_t refTm_f;
+
+	uint32_t origTm_s;
+	uint32_t origTm_f;
+
+	uint32_t rxTm_s;
+	uint32_t rxTm_f;
+
+	uint32_t txTm_s;
+	uint32_t txTm_f;
+
+} ntp_packet_t;
+
+/* From GNSS PPS */
+ uint32_t time_ref_s;
+uint32_t time_ref_f;
+
+typedef enum {
+	NTPD_UNSYNC = 0,
+	NTPD_IN_LOCK = 1,
+	NTPD_IN_HOLDOVER = 2,
+	NTPD_DEGRADED = 3
+} ntpd_status_status_t;
+typedef struct {
+	ntpd_status_status_t status;
+	uint32_t requests_count;
+	uint8_t stratum;
+} ntpd_status_t;
+
+ntpd_status_t ntpd_status;
 /* USER CODE END 0 */
 
 /**
@@ -1307,8 +1358,15 @@ void tcpecho_thread(void * argument)
 	struct netconn *conn, *newconn;
 	err_t err, accept_err,recv_err;
 	struct netbuf *buf;
-	void *data;
-	u16_t len;
+	uint16_t buf_data_len;
+
+	ntp_packet_t *ntp_packet_ptr;
+	//RTCDateTime ntpd_datetime;
+	//RTCDateTime ntpd_datetime;
+	struct tm tm_;
+	uint32_t tm_ms_;
+
+
 	/* Create a new connection identifier. */
 	conn = netconn_new(NETCONN_TCP);
 	if (conn!=NULL)
@@ -1331,8 +1389,39 @@ void tcpecho_thread(void * argument)
 					{
 						do
 						{
-							netbuf_data(buf, &data, &len);
-							netconn_write(newconn, data, len, NETCONN_COPY);
+							netbuf_data(buf, (void **)&ntp_packet_ptr, &buf_data_len);
+
+							if(buf_data_len < 48 || buf_data_len > 2048)
+							{
+								netbuf_delete(buf);
+								continue;
+							}
+							ntp_packet_ptr->li_vn_mode = (0 << 6) | (4 << 3) | (4); // Leap Warning: None, Version: NTPv4, Mode: 4 - Server
+							ntp_packet_ptr->stratum = ntpd_status.stratum;
+							ntp_packet_ptr->poll = 5; // 32s
+							ntp_packet_ptr->precision = -10; // ~1ms
+
+							ntp_packet_ptr->rootDelay = 0; // Delay from GPS clock is ~zero
+							ntp_packet_ptr->rootDispersion_s = 0;
+							ntp_packet_ptr->rootDispersion_f = htonl(NTP_MS_TO_FS_U16 * 1.0); // 1ms
+							ntp_packet_ptr->refId = ('G') | ('P' << 8) | ('S' << 16) | ('\0' << 24);
+							/* Move client's transmit timestamp into origin fields */
+							ntp_packet_ptr->origTm_s = ntp_packet_ptr->txTm_s;
+							ntp_packet_ptr->origTm_f = ntp_packet_ptr->txTm_f;
+
+							ntp_packet_ptr->refTm_s = time_ref_s;
+							ntp_packet_ptr->refTm_f = time_ref_f;
+
+							//rtcGetTime(&RTCD1, &ntpd_datetime);
+							//rtcConvertDateTimeToStructTm(&ntpd_datetime, &tm_, &tm_ms_);
+
+							ntp_packet_ptr->rxTm_s = htonl(mktime(&tm_) - DIFF_SEC_1970_2036);
+							ntp_packet_ptr->rxTm_f = htonl((NTP_MS_TO_FS_U32 * tm_ms_));
+
+							/* Copy into transmit timestamp fields */
+							ntp_packet_ptr->txTm_s = ntp_packet_ptr->rxTm_s;
+							ntp_packet_ptr->txTm_f = ntp_packet_ptr->rxTm_f;
+
 						}
 						while (netbuf_next(buf) >= 0);
 
