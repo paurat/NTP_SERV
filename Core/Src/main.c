@@ -35,11 +35,12 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-#define __NTPD_H__
+
 #define NTP_MS_TO_FS_U32  (4294967296.0 / 1000.0)
 #define NTP_MS_TO_FS_U16  (65536.0 / 1000.0)
 /* Number of seconds between 1970 and Feb 7, 2036 06:28:16 UTC (epoch 1) */
 #define DIFF_SEC_1970_2036          ((uint32_t)2085978496L)
+#define NTP_TIMESTAMP_DELTA 2208988800ull
 
 /* USER CODE END PTD */
 
@@ -171,6 +172,7 @@ typedef struct {
 } ntpd_status_t;
 
 ntpd_status_t ntpd_status;
+//RTCDateTime ntpd_datetime;
 /* USER CODE END 0 */
 
 /**
@@ -1355,8 +1357,8 @@ void StartDefaultTask(void const * argument)
 /* USER CODE END Header_tcpecho_thread */
 void tcpecho_thread(void * argument)
 {
-	struct netconn *conn, *newconn;
-	err_t err, accept_err,recv_err;
+	struct netconn *conn;
+	err_t err,recv_err;
 	struct netbuf *buf;
 	uint16_t buf_data_len;
 
@@ -1368,74 +1370,67 @@ void tcpecho_thread(void * argument)
 
 
 	/* Create a new connection identifier. */
-	conn = netconn_new(NETCONN_TCP);
+	conn = netconn_new(NETCONN_UDP);
 	if (conn!=NULL)
 	{
 		/* Bind connection to well known port number 7. */
-		err = netconn_bind(conn, NULL, 7);
+		err = netconn_bind(conn, NULL, 123);
 		if (err == ERR_OK)
 		{
-			/* Tell connection to go into listening mode. */
-			netconn_listen(conn);
 			while (1)
 			{
-				/* Grab new connection. */
-				accept_err = netconn_accept(conn, &newconn);
-
-				/* Process the new connection. */
-				if (accept_err == ERR_OK)
+				while (( recv_err = netconn_recv(conn, &buf)) == ERR_OK)
 				{
-					while (( recv_err = netconn_recv(newconn, &buf)) == ERR_OK)
+					do
 					{
-						do
+						netbuf_data(buf, (void **)&ntp_packet_ptr, &buf_data_len);
+
+						if(buf_data_len < 48 || buf_data_len > 2048)
 						{
-							netbuf_data(buf, (void **)&ntp_packet_ptr, &buf_data_len);
-
-							if(buf_data_len < 48 || buf_data_len > 2048)
-							{
-								netbuf_delete(buf);
-								continue;
-							}
-							ntp_packet_ptr->li_vn_mode = (0 << 6) | (4 << 3) | (4); // Leap Warning: None, Version: NTPv4, Mode: 4 - Server
-							ntp_packet_ptr->stratum = ntpd_status.stratum;
-							ntp_packet_ptr->poll = 5; // 32s
-							ntp_packet_ptr->precision = -10; // ~1ms
-
-							ntp_packet_ptr->rootDelay = 0; // Delay from GPS clock is ~zero
-							ntp_packet_ptr->rootDispersion_s = 0;
-							ntp_packet_ptr->rootDispersion_f = htonl(NTP_MS_TO_FS_U16 * 1.0); // 1ms
-							ntp_packet_ptr->refId = ('G') | ('P' << 8) | ('S' << 16) | ('\0' << 24);
-							/* Move client's transmit timestamp into origin fields */
-							ntp_packet_ptr->origTm_s = ntp_packet_ptr->txTm_s;
-							ntp_packet_ptr->origTm_f = ntp_packet_ptr->txTm_f;
-
-							ntp_packet_ptr->refTm_s = time_ref_s;
-							ntp_packet_ptr->refTm_f = time_ref_f;
-
-							//rtcGetTime(&RTCD1, &ntpd_datetime);
-							//rtcConvertDateTimeToStructTm(&ntpd_datetime, &tm_, &tm_ms_);
-
-							ntp_packet_ptr->rxTm_s = htonl(mktime(&tm_) - DIFF_SEC_1970_2036);
-							ntp_packet_ptr->rxTm_f = htonl((NTP_MS_TO_FS_U32 * tm_ms_));
-
-							/* Copy into transmit timestamp fields */
-							ntp_packet_ptr->txTm_s = ntp_packet_ptr->rxTm_s;
-							ntp_packet_ptr->txTm_f = ntp_packet_ptr->rxTm_f;
-
+							netbuf_delete(buf);
+							continue;
 						}
-						while (netbuf_next(buf) >= 0);
+						ntp_packet_ptr->li_vn_mode = (0 << 6) | (4 << 3) | (4); // Leap Warning: None, Version: NTPv4, Mode: 4 - Server
+						ntp_packet_ptr->stratum = ntpd_status.stratum;
+						ntp_packet_ptr->poll = 5; // 32s
+						ntp_packet_ptr->precision = -10; // ~1ms
 
-						netbuf_delete(buf);
+						ntp_packet_ptr->rootDelay = 0; // Delay from GPS clock is ~zero
+						ntp_packet_ptr->rootDispersion_s = 0;
+						ntp_packet_ptr->rootDispersion_f = htonl(NTP_MS_TO_FS_U16 * 1.0); // 1ms
+						ntp_packet_ptr->refId = ('G') | ('P' << 8) | ('S' << 16) | ('\0' << 24);
+						/* Move client's transmit timestamp into origin fields */
+						ntp_packet_ptr->origTm_s = ntp_packet_ptr->txTm_s;
+						ntp_packet_ptr->origTm_f = ntp_packet_ptr->txTm_f;
+
+						ntp_packet_ptr->refTm_s = time_ref_s;
+						ntp_packet_ptr->refTm_f = time_ref_f;
+
+						//rtcGetTime(&RTCD1, &ntpd_datetime);
+						//rtcConvertDateTimeToStructTm(&ntpd_datetime, &tm_, &tm_ms_);
+
+						ntp_packet_ptr->rxTm_s = htonl(rtc_read()- DIFF_SEC_1970_2036);//htonl(mktime(&tm_) - DIFF_SEC_1970_2036);
+						ntp_packet_ptr->rxTm_f = 0;//htonl((NTP_MS_TO_FS_U32 * tm_ms_));
+
+						/* Copy into transmit timestamp fields */
+						ntp_packet_ptr->txTm_s = ntp_packet_ptr->rxTm_s;
+						ntp_packet_ptr->txTm_f = ntp_packet_ptr->rxTm_f;
+
+						netconn_send(conn, buf);
 					}
-					/* Close connection and discard connection identifier. */
-					netconn_close(newconn);
-					netconn_delete(newconn);
+					while (netbuf_next(buf) >= 0);
+
+					netbuf_delete(buf);
 				}
+				/* Close connection and discard connection identifier. */
+				//netconn_close(newconn);
+				//netconn_delete(newconn);
+				ntpd_status.requests_count++;
 			}
 		}
 		else
 		{
-			netconn_delete(newconn);
+			netconn_delete(conn);
 		}
 	}
 }
