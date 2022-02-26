@@ -171,7 +171,11 @@ typedef struct {
 	uint8_t stratum;
 } ntpd_status_t;
 
-ntpd_status_t ntpd_status;
+ntpd_status_t ntpd_status = {
+  .status = NTPD_IN_LOCK,
+  .requests_count = 0,
+  .stratum = 16
+};
 //RTCDateTime ntpd_datetime;
 /* USER CODE END 0 */
 
