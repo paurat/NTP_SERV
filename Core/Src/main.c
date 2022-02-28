@@ -31,6 +31,7 @@
 #include "time.h"
 #include "lwip/api.h"
 #include "lwip/netif.h"
+#include "lwip/apps/httpd.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -75,7 +76,7 @@ static void MX_USART6_UART_Init(void);
 static void MX_UART7_Init(void);
 static void MX_RTC_Init(void);
 void StartDefaultTask(void const * argument);
-void tcpecho_thread(void * argument);
+void tcpecho_thread(void const * argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -157,7 +158,7 @@ typedef struct
 
 /* From GNSS PPS */
  uint32_t time_ref_s;
-uint32_t time_ref_f;
+ uint32_t time_ref_f;
 
 typedef enum {
 	NTPD_UNSYNC = 0,
@@ -236,7 +237,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
+  //MX_LWIP_Init();
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -283,6 +284,8 @@ int main(void)
   HAL_UART_Transmit(&huart7,(uint8_t*) CONRMC, 10, 1000);
   HAL_Delay(100);
 
+  //start the web server
+
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -305,6 +308,11 @@ int main(void)
   /* definition and creation of defaultTask */
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+
+  /* definition and creation of myTask02 */
+  osThreadDef(myTask02, tcpecho_thread, osPriorityIdle, 0, 128);
+  myTask02Handle = osThreadCreate(osThread(myTask02), NULL);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -1054,6 +1062,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 		}
 		if(res==1&&gps_unix!=rtc_read()){
 
+			time_ref_s=htonl(gps_unix- DIFF_SEC_1970_2036);
 			sTime.Hours = Time_calc.tm_hour;
 			sTime.Minutes = Time_calc.tm_min;
 			sTime.Seconds = Time_calc.tm_sec;
@@ -1336,6 +1345,7 @@ void StartDefaultTask(void const * argument)
   /* init code for LWIP */
   MX_LWIP_Init();
   /* USER CODE BEGIN 5 */
+  httpd_init();
 	/* Initialize tcp echo server */
 	tcpecho_init();
 
@@ -1359,86 +1369,92 @@ void StartDefaultTask(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_tcpecho_thread */
-void tcpecho_thread(void * argument)
+void tcpecho_thread(void const * argument)
 {
-	struct netconn *conn;
-	err_t err,recv_err;
-	struct netbuf *buf;
-	uint16_t buf_data_len;
-
-	ntp_packet_t *ntp_packet_ptr;
-	//RTCDateTime ntpd_datetime;
-	//RTCDateTime ntpd_datetime;
-	struct tm tm_;
-	uint32_t tm_ms_;
-
-
-	/* Create a new connection identifier. */
-	conn = netconn_new(NETCONN_UDP);
-	if (conn!=NULL)
+  /* USER CODE BEGIN tcpecho_thread */
+  /* Infinite loop */
 	{
-		/* Bind connection to well known port number 7. */
-		err = netconn_bind(conn, NULL, 123);
-		if (err == ERR_OK)
+		struct netconn *conn;
+		err_t err,recv_err;
+		struct netbuf *buf;
+		uint16_t buf_data_len;
+
+		ntp_packet_t *ntp_packet_ptr;
+		//RTCDateTime ntpd_datetime;
+		//RTCDateTime ntpd_datetime;
+		//struct tm tm_;
+		//uint32_t tm_ms_;
+
+
+		/* Create a new connection identifier. */
+		conn = netconn_new(NETCONN_UDP);
+		if (conn!=NULL)
 		{
-			while (1)
+			/* Bind connection to well known port number 7. */
+			err = netconn_bind(conn, NULL, 123);
+			if (err == ERR_OK)
 			{
-				while (( recv_err = netconn_recv(conn, &buf)) == ERR_OK)
+				while (1)
 				{
-					do
+					while (( recv_err = netconn_recv(conn, &buf)) == ERR_OK)
 					{
-						netbuf_data(buf, (void **)&ntp_packet_ptr, &buf_data_len);
-
-						if(buf_data_len < 48 || buf_data_len > 2048)
+						do
 						{
-							netbuf_delete(buf);
-							continue;
+							netbuf_data(buf, (void **)&ntp_packet_ptr, &buf_data_len);
+
+							if(buf_data_len < 48 || buf_data_len > 2048)
+							{
+								netbuf_delete(buf);
+								continue;
+							}
+							ntp_packet_ptr->li_vn_mode = (0 << 6) | (4 << 3) | (4); // Leap Warning: None, Version: NTPv4, Mode: 4 - Server
+							ntp_packet_ptr->stratum = ntpd_status.stratum;
+							ntp_packet_ptr->poll = 5; // 32s
+							ntp_packet_ptr->precision = -10; // ~1ms
+
+							ntp_packet_ptr->rootDelay = 0; // Delay from GPS clock is ~zero
+							ntp_packet_ptr->rootDispersion_s = 0;
+							ntp_packet_ptr->rootDispersion_f = htonl(NTP_MS_TO_FS_U16 * 1.0); // 1ms
+							ntp_packet_ptr->refId = ('G') | ('P' << 8) | ('S' << 16) | ('\0' << 24);
+							/* Move client's transmit timestamp into origin fields */
+							ntp_packet_ptr->origTm_s = ntp_packet_ptr->txTm_s;
+							ntp_packet_ptr->origTm_f = ntp_packet_ptr->txTm_f;
+
+							ntp_packet_ptr->refTm_s = time_ref_s;
+							ntp_packet_ptr->refTm_f = time_ref_f;
+
+							//rtcGetTime(&RTCD1, &ntpd_datetime);
+							//rtcConvertDateTimeToStructTm(&ntpd_datetime, &tm_, &tm_ms_);
+
+							ntp_packet_ptr->rxTm_s = htonl(rtc_read()- DIFF_SEC_1970_2036);//htonl(mktime(&tm_) - DIFF_SEC_1970_2036);
+							ntp_packet_ptr->rxTm_f = 0;//htonl((NTP_MS_TO_FS_U32 * tm_ms_));
+
+							/* Copy into transmit timestamp fields */
+							ntp_packet_ptr->txTm_s = ntp_packet_ptr->rxTm_s;
+							ntp_packet_ptr->txTm_f = ntp_packet_ptr->rxTm_f;
+
+							netconn_send(conn, buf);
 						}
-						ntp_packet_ptr->li_vn_mode = (0 << 6) | (4 << 3) | (4); // Leap Warning: None, Version: NTPv4, Mode: 4 - Server
-						ntp_packet_ptr->stratum = ntpd_status.stratum;
-						ntp_packet_ptr->poll = 5; // 32s
-						ntp_packet_ptr->precision = -10; // ~1ms
+						while (netbuf_next(buf) >= 0);
 
-						ntp_packet_ptr->rootDelay = 0; // Delay from GPS clock is ~zero
-						ntp_packet_ptr->rootDispersion_s = 0;
-						ntp_packet_ptr->rootDispersion_f = htonl(NTP_MS_TO_FS_U16 * 1.0); // 1ms
-						ntp_packet_ptr->refId = ('G') | ('P' << 8) | ('S' << 16) | ('\0' << 24);
-						/* Move client's transmit timestamp into origin fields */
-						ntp_packet_ptr->origTm_s = ntp_packet_ptr->txTm_s;
-						ntp_packet_ptr->origTm_f = ntp_packet_ptr->txTm_f;
-
-						ntp_packet_ptr->refTm_s = time_ref_s;
-						ntp_packet_ptr->refTm_f = time_ref_f;
-
-						//rtcGetTime(&RTCD1, &ntpd_datetime);
-						//rtcConvertDateTimeToStructTm(&ntpd_datetime, &tm_, &tm_ms_);
-
-						ntp_packet_ptr->rxTm_s = htonl(rtc_read()- DIFF_SEC_1970_2036);//htonl(mktime(&tm_) - DIFF_SEC_1970_2036);
-						ntp_packet_ptr->rxTm_f = 0;//htonl((NTP_MS_TO_FS_U32 * tm_ms_));
-
-						/* Copy into transmit timestamp fields */
-						ntp_packet_ptr->txTm_s = ntp_packet_ptr->rxTm_s;
-						ntp_packet_ptr->txTm_f = ntp_packet_ptr->rxTm_f;
-
-						netconn_send(conn, buf);
+						netbuf_delete(buf);
 					}
-					while (netbuf_next(buf) >= 0);
-
-					netbuf_delete(buf);
+					/* Close connection and discard connection identifier. */
+					//netconn_close(newconn);
+					//netconn_delete(newconn);
+					ntpd_status.requests_count++;
 				}
-				/* Close connection and discard connection identifier. */
-				//netconn_close(newconn);
-				//netconn_delete(newconn);
-				ntpd_status.requests_count++;
+			}
+			else
+			{
+				netconn_delete(conn);
 			}
 		}
-		else
-		{
-			netconn_delete(conn);
-		}
 	}
+  /* USER CODE END tcpecho_thread */
 }
-/**
+
+ /**
   * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM6 interrupt took place, inside
   * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment

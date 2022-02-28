@@ -85,7 +85,10 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../LWIP/Target/ethernetif.h \
  ../Middlewares/Third_Party/LwIP/src/include/lwip/tcpip.h \
  ../Middlewares/Third_Party/LwIP/src/include/lwip/api.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/netbuf.h
+ ../Middlewares/Third_Party/LwIP/src/include/lwip/netbuf.h \
+ ../Middlewares/Third_Party/LwIP/src/include/lwip/apps/httpd.h \
+ ../Middlewares/Third_Party/LwIP/src/include/lwip/apps/httpd_opts.h \
+ ../Middlewares/Third_Party/LwIP/src/include/lwip/prot/iana.h
 
 ../Core/Inc/main.h:
 
@@ -262,3 +265,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Middlewares/Third_Party/LwIP/src/include/lwip/api.h:
 
 ../Middlewares/Third_Party/LwIP/src/include/lwip/netbuf.h:
+
+../Middlewares/Third_Party/LwIP/src/include/lwip/apps/httpd.h:
+
+../Middlewares/Third_Party/LwIP/src/include/lwip/apps/httpd_opts.h:
+
+../Middlewares/Third_Party/LwIP/src/include/lwip/prot/iana.h:
