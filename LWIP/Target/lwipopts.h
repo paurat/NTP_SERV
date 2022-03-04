@@ -87,6 +87,8 @@
 #define LWIP_HTTPD 1
 /*----- Default Value for LWIP_HTTPD_MAX_TAG_NAME_LEN: 8 ---*/
 #define LWIP_HTTPD_MAX_TAG_NAME_LEN 16
+/*----- Default Value for LWIP_HTTPD_CUSTOM_FILES: 0 ---*/
+#define LWIP_HTTPD_CUSTOM_FILES 1
 /*----- Value in opt.h for HTTPD_USE_CUSTOM_FSDATA: 0 -----*/
 #define HTTPD_USE_CUSTOM_FSDATA 1
 /*----- Value in opt.h for LWIP_STATS: 1 -----*/

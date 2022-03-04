@@ -32,6 +32,9 @@
 #include "lwip/api.h"
 #include "lwip/netif.h"
 #include "lwip/apps/httpd.h"
+#include "myapi.h"
+//#include "localtypes.h"
+//#include "util.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -190,6 +193,9 @@ int main(void)
 
 	memset(gps.day,0,sizeof(gps));
 	// ZDA-38;RMC-68
+
+
+
 	 //включение ZDA
 	 char MESZDA[]={0xB5, 0x62, 0x06, 0x01, 0x08, 0x00, 0xF0, 0x08, 0x01, 0x01, 0x00, 0x01, 0x01, 0x00, 0x0B, 0x6B};
 	 char CONZDA[]={0xB5, 0x62, 0x06, 0x01, 0x02, 0x00, 0xF0, 0x08, 0x01, 0x19};
@@ -246,6 +252,7 @@ int main(void)
   MX_UART7_Init();
   MX_RTC_Init();
   /* USER CODE BEGIN 2 */
+  HAL_Delay(5000);
   //ON ZDA
   HAL_UART_Transmit(&huart7,(uint8_t*) MESZDA, 16, 1000);
   HAL_Delay(100);
