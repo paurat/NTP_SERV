@@ -87,7 +87,8 @@ Core/Src/myapi.o: ../Core/Src/myapi.c ../Core/Inc/myapi.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
  ../LWIP/Target/ethernetif.h \
  ../Middlewares/Third_Party/LwIP/src/include/lwip/tcpip.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/apps/fs.h
+ ../Middlewares/Third_Party/LwIP/src/include/lwip/apps/fs.h \
+ ../Core/Inc/local_files.h
 
 ../Core/Inc/myapi.h:
 
@@ -270,3 +271,5 @@ Core/Src/myapi.o: ../Core/Src/myapi.c ../Core/Inc/myapi.h \
 ../Middlewares/Third_Party/LwIP/src/include/lwip/tcpip.h:
 
 ../Middlewares/Third_Party/LwIP/src/include/lwip/apps/fs.h:
+
+../Core/Inc/local_files.h:
