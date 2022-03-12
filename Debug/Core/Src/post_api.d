@@ -44,7 +44,8 @@ Core/Src/post_api.o: ../Core/Src/post_api.c ../Core/Inc/post_api.h \
  ../Middlewares/Third_Party/LwIP/src/include/lwip/err.h \
  ../Middlewares/Third_Party/LwIP/src/include/lwip/pbuf.h \
  ../Middlewares/Third_Party/LwIP/src/include/lwip/def.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/mem.h
+ ../Middlewares/Third_Party/LwIP/src/include/lwip/mem.h \
+ ../Core/Inc/local_files.h ../Core/Inc/jsmn.h
 
 ../Core/Inc/post_api.h:
 
@@ -141,3 +142,7 @@ Core/Src/post_api.o: ../Core/Src/post_api.c ../Core/Inc/post_api.h \
 ../Middlewares/Third_Party/LwIP/src/include/lwip/def.h:
 
 ../Middlewares/Third_Party/LwIP/src/include/lwip/mem.h:
+
+../Core/Inc/local_files.h:
+
+../Core/Inc/jsmn.h:

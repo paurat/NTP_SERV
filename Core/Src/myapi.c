@@ -4,8 +4,8 @@
  *  Created on: Mar 4, 2022
  *      Author: User
  */
-#include "myapi.h"
 #include "local_files.h"
+#include "myapi.h"
 #define JSON_SIZE 1608
 
 int fs_read_custom(struct fs_file *file, char *buffer, int count){
@@ -17,7 +17,12 @@ int fs_open_custom(struct fs_file *file, const char *name){
 	u16_t offset = 0;
 
 	if (!strcmp(name, "/info.json")) {
-			offset = sprintf(generated_html,"[{\"IPaddress\":\"%d",\"Timezone\":\"%d",\"contacts\":\"%d",\"software_version\":\"0.000000001\",\"mac\":\"no\"}]",user_info.ip,user_info.zone,user_info.contacts);
+
+		char* ip=user_info.ip;
+		int zone=user_info.zone;
+		char* contacts=user_info.contacts;
+
+			offset = sprintf(generated_html,"[{\"IPaddress\":\"%s\",\"Timezone\":\"%d\",\"contacts\":\"%s\",\"software_version\":\"0.000000001\",\"mac\":\"no\"}]",ip,zone,contacts);
 	}
 	else if (!strcmp(name, "/uptime.json")) {
 			RTC_DateTypeDef dateStruct;

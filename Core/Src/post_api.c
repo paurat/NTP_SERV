@@ -1,19 +1,34 @@
 #include "post_api.h"
+#include "local_files.h"
+#include "jsmn.h"
 #define USER_PASS_BUFSIZE 512
-
+#define mymin(a,b) \
+		({ __typeof__ (a) _a = (a); \
+		__typeof__ (b) _b = (b); \
+		_a < _b ? _a : _b; })
 static void *current_connection;
 static void *valid_connection;
-static char last_user[USER_PASS_BUFSIZE];
+//static char last_user[USER_PASS_BUFSIZE];
 
+char buf_data[USER_PASS_BUFSIZE];
+
+static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
+	if (tok->type == JSMN_STRING && (int)strlen(s) == tok->end - tok->start &&
+			strncmp(json + tok->start, s, tok->end - tok->start) == 0) {
+		return 0;
+	}
+	return -1;
+}
 err_t
 httpd_post_begin(void *connection, const char *uri, const char *http_request, u16_t http_request_len, int content_len, char *response_uri, u16_t response_uri_len, u8_t *post_auto_wnd)
 {
+	memset(buf_data,0,sizeof(buf_data));
 	LWIP_UNUSED_ARG(connection);
 	LWIP_UNUSED_ARG(http_request);
 	LWIP_UNUSED_ARG(http_request_len);
 	LWIP_UNUSED_ARG(content_len);
 	LWIP_UNUSED_ARG(post_auto_wnd);
-	if (!memcmp(uri, "/info.html", 11)) {
+	if (!memcmp(uri, "/info.html", 10)) {
 		if (current_connection != connection) {
 			current_connection = connection;
 			valid_connection = NULL;
@@ -36,10 +51,36 @@ httpd_post_receive_data(void *connection, struct pbuf *p)
 	err_t ret;
 
 	LWIP_ASSERT("NULL pbuf", p != NULL);
-
+	strncpy(buf_data, p->payload, p->len);
 	if (current_connection == connection) {
+		jsmn_parser parser;
+		jsmntok_t t[512]; /* We expect no more than 512 JSON tokens */
+		jsmn_init(&parser);
 
-
+		int tokens = jsmn_parse(&parser, buf_data, strlen(buf_data), t, 128);
+		for (int i = 0; i<tokens; i++){
+			if (jsoneq(buf_data, &t[i], "IPaddress") == 0) {
+				buf_data[t[i+1].end] = '\0';
+				memset(user_info.ip,0,16);
+				int len = mymin(16,t[i+1].end-t[i+1].start);
+				strncpy(user_info.ip,&buf_data[t[i+1].start],len);
+				i++;
+				continue;
+			}
+			if (jsoneq(buf_data, &t[i], "Timezone") == 0) {
+				user_info.zone = atoi(&buf_data[t[i+1].start]);
+				i++;
+				continue;
+			}
+			if (jsoneq(buf_data, &t[i], "contacts") == 0) {
+				memset(user_info.contacts,0,INFOLEN);
+				buf_data[t[i+1].end] = '\0';
+				int len = mymin(INFOLEN,t[i+1].end-t[i+1].start);
+				strncpy(user_info.contacts,&buf_data[t[i+1].start],len);
+				i++;
+				continue;
+			}
+		}
 		/* not returning ERR_OK aborts the connection, so return ERR_OK unless the
        connection is unknown */
 		ret = ERR_OK;

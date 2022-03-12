@@ -8,13 +8,13 @@
 #ifndef INC_LOCAL_FILES_H_
 #define INC_LOCAL_FILES_H_
 
-
+#define INFOLEN 255
 //++++++++++++++++++++Structs+++++++++++++++++++++++++
 
 struct user_info {
-	char ip;
-	char zone;
-	char contacts;
-};
+	char ip[16];
+	int zone;
+	char contacts[INFOLEN];
+} user_info;
 
 #endif /* INC_LOCAL_FILES_H_ */

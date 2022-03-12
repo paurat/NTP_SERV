@@ -1,4 +1,5 @@
-Core/Src/myapi.o: ../Core/Src/myapi.c ../Core/Inc/myapi.h \
+Core/Src/myapi.o: ../Core/Src/myapi.c ../Core/Inc/local_files.h \
+ ../Core/Inc/myapi.h \
  ../Middlewares/Third_Party/LwIP/src/include/lwip/opt.h \
  ../LWIP/Target/lwipopts.h ../Core/Inc/main.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h \
@@ -87,8 +88,9 @@ Core/Src/myapi.o: ../Core/Src/myapi.c ../Core/Inc/myapi.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
  ../LWIP/Target/ethernetif.h \
  ../Middlewares/Third_Party/LwIP/src/include/lwip/tcpip.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/apps/fs.h \
- ../Core/Inc/local_files.h
+ ../Middlewares/Third_Party/LwIP/src/include/lwip/apps/fs.h
+
+../Core/Inc/local_files.h:
 
 ../Core/Inc/myapi.h:
 
@@ -271,5 +273,3 @@ Core/Src/myapi.o: ../Core/Src/myapi.c ../Core/Inc/myapi.h \
 ../Middlewares/Third_Party/LwIP/src/include/lwip/tcpip.h:
 
 ../Middlewares/Third_Party/LwIP/src/include/lwip/apps/fs.h:
-
-../Core/Inc/local_files.h:

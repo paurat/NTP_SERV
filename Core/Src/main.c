@@ -181,6 +181,13 @@ ntpd_status_t ntpd_status = {
   .stratum = 16
 };
 //RTCDateTime ntpd_datetime;
+
+struct user_info {
+	char ip[16];
+	int zone;
+	char contacts[255];
+}user_info;
+
 /* USER CODE END 0 */
 
 /**
