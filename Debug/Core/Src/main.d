@@ -90,7 +90,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Middlewares/Third_Party/LwIP/src/include/lwip/apps/httpd_opts.h \
  ../Middlewares/Third_Party/LwIP/src/include/lwip/prot/iana.h \
  ../Core/Inc/myapi.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/apps/fs.h
+ ../Middlewares/Third_Party/LwIP/src/include/lwip/apps/fs.h \
+ ../Core/Inc/local_files.h
 
 ../Core/Inc/main.h:
 
@@ -277,3 +278,5 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/myapi.h:
 
 ../Middlewares/Third_Party/LwIP/src/include/lwip/apps/fs.h:
+
+../Core/Inc/local_files.h:

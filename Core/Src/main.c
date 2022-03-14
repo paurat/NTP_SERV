@@ -33,6 +33,7 @@
 #include "lwip/netif.h"
 #include "lwip/apps/httpd.h"
 #include "myapi.h"
+#include "local_files.h"
 //#include "localtypes.h"
 //#include "util.h"
 /* USER CODE END Includes */
@@ -116,19 +117,8 @@ int dataTransmitted=1;
 char year_str[2]={0};
 int century=100;
 
-struct Time_rx
-{
-	char day[3];
-	char month[3];
-	char year[5];
-	char hours[3];
-	char minuttes[3];
-	char seconds[6];
-	char errors[2];
-	char sinc[2];
-};
+
 struct tm Time_calc;
-struct Time_rx gps;
 
 typedef struct
 {
@@ -181,12 +171,6 @@ ntpd_status_t ntpd_status = {
   .stratum = 16
 };
 //RTCDateTime ntpd_datetime;
-
-struct user_info {
-	char ip[16];
-	int zone;
-	char contacts[255];
-}user_info;
 
 /* USER CODE END 0 */
 

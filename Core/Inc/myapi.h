@@ -13,6 +13,7 @@
 #include "fs.h"
 
 extern RTC_HandleTypeDef hrtc;
+extern struct Time_rx gps;
 
 int fs_read_custom(struct fs_file *file, char *buffer, int count);
 int fs_open_custom(struct fs_file *file, const char *name);

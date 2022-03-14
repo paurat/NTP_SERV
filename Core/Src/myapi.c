@@ -25,11 +25,11 @@ int fs_open_custom(struct fs_file *file, const char *name){
 			offset = sprintf(generated_html,"[{\"IPaddress\":\"%s\",\"Timezone\":\"%d\",\"contacts\":\"%s\",\"software_version\":\"0.000000001\",\"mac\":\"no\"}]",ip,zone,contacts);
 	}
 	else if (!strcmp(name, "/uptime.json")) {
-			RTC_DateTypeDef dateStruct;
-			RTC_TimeTypeDef timeStruct;
+		RTC_DateTypeDef dateStruct;
+		RTC_TimeTypeDef timeStruct;
 
-			//hrtc.Instance = RTC;
-
+		//hrtc.Instance = RTC;
+		if (gps.year[0]!='V'){
 			// Read actual date and time
 			HAL_RTC_GetTime(&hrtc, &timeStruct, FORMAT_BIN); // Read time first!
 			HAL_RTC_GetDate(&hrtc, &dateStruct, FORMAT_BIN);
@@ -41,7 +41,11 @@ int fs_open_custom(struct fs_file *file, const char *name){
 			int Year=dateStruct.Year+2000;
 
 
-		offset = sprintf(generated_html,"%02d:%02d:%02d %02d.%02d.%04d",Hours,Minutes,Seconds,Date,Month,Year);
+			offset = sprintf(generated_html,"%02d:%02d:%02d %02d.%02d.%04d",Hours,Minutes,Seconds,Date,Month,Year);
+		}
+		else if (gps.year[0]=='V') {
+			offset = sprintf(generated_html,"no Reference Timestamp");
+		}
 	}
 
 	if (offset>0){
