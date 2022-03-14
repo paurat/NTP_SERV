@@ -37,7 +37,7 @@ int fs_open_custom(struct fs_file *file, const char *name){
 			int Minutes=timeStruct.Minutes;
 			int Seconds=timeStruct.Seconds;
 			int Date=dateStruct.Date;
-			int Month=dateStruct.Month;
+			int Month=dateStruct.Month+1;
 			int Year=dateStruct.Year+2000;
 
 

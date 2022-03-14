@@ -116,8 +116,8 @@ int dataReceived=1;
 int dataTransmitted=1;
 char year_str[2]={0};
 int century=100;
-
-
+int offset_minutes[]={  0,  0,  0,-30,  0, 0, 0, 0, 0, 0,-30,  0,  0,  0, 0, 0, 0, 0, 30, 0, 30, 0, 30, 45, 0, 30, 0, 0, 45, 0, 30,  0, 30,  0,  0, 45,  0,  0};
+int offset_hours[]={  -12,-11,-10, -9, -9,-8,-7,-6,-5,-4, -3, -3, -2, -1, 0, 1, 2, 3,  3, 4,  4, 5,  5,  5, 6,  6, 7, 8,  8, 9,  9, 10, 10, 11, 12, 12, 13, 14};
 struct tm Time_calc;
 
 typedef struct
@@ -1047,10 +1047,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 		if(res==1&&gps_unix!=rtc_read()){
 
 			time_ref_s=htonl(gps_unix- DIFF_SEC_1970_2036);
-			sTime.Hours = Time_calc.tm_hour;
-			sTime.Minutes = Time_calc.tm_min;
+			sTime.Hours = Time_calc.tm_hour+offset_hours[user_info.zone];;
+			sTime.Minutes = Time_calc.tm_min+offset_minutes[user_info.zone];
 			sTime.Seconds = Time_calc.tm_sec;
 			sTime.StoreOperation = RTC_STOREOPERATION_RESET;
+
+
+
+
 			if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN) != HAL_OK)
 			{
 				Error_Handler();
@@ -1058,7 +1062,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 			sDate.Month = Time_calc.tm_mon;
 			sDate.Date = Time_calc.tm_mday;
 			sDate.Year = Time_calc.tm_year-century;
-
 			if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN) != HAL_OK)
 			{
 				Error_Handler();
@@ -1337,6 +1340,7 @@ void StartDefaultTask(void const * argument)
 	for(;;)
 	{
 		HAL_UART_Receive_IT (&huart7, (uint8_t*)&buff, 1);
+		//HAL_GPIO_TogglePin(Led_GPIO_Port, Led1_Pin);
 		HAL_GPIO_TogglePin(Led_GPIO_Port, Led_Pin);
 		//HAL_UART_Receive(&huart7, (uint8_t*)RXstr, MESsize, 1000);
 		//HAL_UART_Transmit(&huart6, (uint8_t*)str, 8, 1000);
