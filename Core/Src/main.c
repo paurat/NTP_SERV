@@ -116,8 +116,10 @@ int dataReceived=1;
 int dataTransmitted=1;
 char year_str[2]={0};
 int century=100;
-int offset_minutes[]={  0,  0,  0,-30,  0, 0, 0, 0, 0, 0,-30,  0,  0,  0, 0, 0, 0, 0, 30, 0, 30, 0, 30, 45, 0, 30, 0, 0, 45, 0, 30,  0, 30,  0,  0, 45,  0,  0};
-int offset_hours[]={  -12,-11,-10, -9, -9,-8,-7,-6,-5,-4, -3, -3, -2, -1, 0, 1, 2, 3,  3, 4,  4, 5,  5,  5, 6,  6, 7, 8,  8, 9,  9, 10, 10, 11, 12, 12, 13, 14};
+//_______________________________0_______1_______2________3_______4______5_______6_______7_______8_______9______10______11_____12_____13___14____15____16_____17______18_____19______20_____21______22_____23_____24_____25_____26_____27______28_____29______30_____31_____32_____33_____34_____35_____36_____37
+//int offset_minutes[]={         0,      0,      0,     -30,      0,     0,      0,      0,      0,      0,    -30,      0,     0,     0,   0,    0,    0,     0,     30,     0,     30,     0,     30,    45,     0,    30,     0,     0,     45,     0,     30,     0,    30,     0,     0,    45,     0,     0};
+//int offset_hours[]={         -12,    -11,    -10,      -9,     -9,    -8,     -7,     -6,     -5,     -4,     -3,     -3,    -2,    -1,   0,    1,    2,     3,      3,     4,      4,     5,      5,     5,     6,     6,     7,     8,      8,     9,      9,    10,    10,    11,    12,    12,    13,    14};
+const int offset_unix[]={   -43200, -39600, -36000,  -34200, -32400, -2800, -25200, -21600, -18000, -14400, -12600, -10800, -7200, -3600,   0, 3600, 7200, 10800,  12600, 14400,  16200, 18000,  19800, 20700, 21600, 23400, 25200, 28800,  31500, 32400,  34200, 36000, 37800, 39600, 43200, 45900, 46800, 50400};
 struct tm Time_calc;
 
 typedef struct
@@ -1047,8 +1049,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 		if(res==1&&gps_unix!=rtc_read()){
 
 			time_ref_s=htonl(gps_unix- DIFF_SEC_1970_2036);
-			sTime.Hours = Time_calc.tm_hour+offset_hours[user_info.zone];;
-			sTime.Minutes = Time_calc.tm_min+offset_minutes[user_info.zone];
+			sTime.Hours = Time_calc.tm_hour;
+			sTime.Minutes = Time_calc.tm_min;
 			sTime.Seconds = Time_calc.tm_sec;
 			sTime.StoreOperation = RTC_STOREOPERATION_RESET;
 
@@ -1309,7 +1311,8 @@ time_t rtc_read(void) {
 	//printf("tm_wday=%d\t\n",timeinfo.tm_wday);
 
 	// Convert to timestamp
-	time_t t = mktime(&timeinfo);
+	time_t t = mktime(&timeinfo)+offset_unix[user_info.zone];
+
 
 	return t;
 }

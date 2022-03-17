@@ -33,12 +33,28 @@ int fs_open_custom(struct fs_file *file, const char *name){
 			// Read actual date and time
 			HAL_RTC_GetTime(&hrtc, &timeStruct, FORMAT_BIN); // Read time first!
 			HAL_RTC_GetDate(&hrtc, &dateStruct, FORMAT_BIN);
-			int Hours=timeStruct.Hours;
-			int Minutes=timeStruct.Minutes;
-			int Seconds=timeStruct.Seconds;
-			int Date=dateStruct.Date;
-			int Month=dateStruct.Month+1;
-			int Year=dateStruct.Year+2000;
+
+			struct tm timeinfo;
+
+			timeinfo.tm_wday = dateStruct.WeekDay;
+			timeinfo.tm_mon = dateStruct.Month;//-1 do January==0 month
+			timeinfo.tm_mday = dateStruct.Date;
+			timeinfo.tm_year = dateStruct.Year;
+			timeinfo.tm_hour = timeStruct.Hours;
+			timeinfo.tm_min = timeStruct.Minutes;
+			timeinfo.tm_sec = timeStruct.Seconds;
+
+			time_t t = mktime(&timeinfo)+offset_unix[user_info.zone];
+			// time_t  to   tm
+
+			localtime_r(  &t, &WebPageTime );
+
+			int Hours=WebPageTime.tm_hour;
+			int Minutes=WebPageTime.tm_min;
+			int Seconds=WebPageTime.tm_sec;
+			int Date=WebPageTime.tm_mday;
+			int Month=WebPageTime.tm_mon+1;
+			int Year=WebPageTime.tm_year+2000;
 
 
 			offset = sprintf(generated_html,"%02d:%02d:%02d %02d.%02d.%04d",Hours,Minutes,Seconds,Date,Month,Year);
