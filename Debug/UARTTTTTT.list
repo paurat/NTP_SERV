@@ -7,23 +7,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   1 .text         00023914  080001d0  080001d0  000101d0  2**4
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .rodata       00004bc0  08023ae8  08023ae8  00033ae8  2**3
+  2 .rodata       00005780  08023ae8  08023ae8  00033ae8  2**3
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  3 .ARM.extab    00000000  080286a8  080286a8  00040a50  2**0
+  3 .ARM.extab    00000000  08029268  08029268  00040a50  2**0
                   CONTENTS
-  4 .ARM          00000008  080286a8  080286a8  000386a8  2**2
+  4 .ARM          00000008  08029268  08029268  00039268  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  5 .preinit_array 00000000  080286b0  080286b0  00040a50  2**0
+  5 .preinit_array 00000000  08029270  08029270  00040a50  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  6 .init_array   00000008  080286b0  080286b0  000386b0  2**2
+  6 .init_array   00000008  08029270  08029270  00039270  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  7 .fini_array   00000004  080286b8  080286b8  000386b8  2**2
+  7 .fini_array   00000004  08029278  08029278  00039278  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  8 .data         00000a50  20000000  080286bc  00040000  2**3
+  8 .data         00000a50  20000000  0802927c  00040000  2**3
                   CONTENTS, ALLOC, LOAD, DATA
-  9 .bss          0000b3f4  20000a50  0802910c  00040a50  2**3
+  9 .bss          0000b3f4  20000a50  08029ccc  00040a50  2**3
                   ALLOC
- 10 ._user_heap_stack 00000604  2000be44  0802910c  0004be44  2**0
+ 10 ._user_heap_stack 00000604  2000be44  08029ccc  0004be44  2**0
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  00040a50  2**0
                   CONTENTS, READONLY
@@ -8380,7 +8380,7 @@ LoopFillZerobss:
   ldr r1, =_edata
  8003d0c:	20000a50 	.word	0x20000a50
   ldr r2, =_sidata
- 8003d10:	080286bc 	.word	0x080286bc
+ 8003d10:	0802927c 	.word	0x0802927c
   ldr r2, =_sbss
  8003d14:	20000a50 	.word	0x20000a50
   ldr r4, =_ebss
@@ -32605,7 +32605,7 @@ netconn_bind(struct netconn *conn, const ip_addr_t *addr, u16_t port)
  800c528:	08023de0 	.word	0x08023de0
  800c52c:	08023f18 	.word	0x08023f18
  800c530:	08023e38 	.word	0x08023e38
- 800c534:	08028168 	.word	0x08028168
+ 800c534:	08028d2c 	.word	0x08028d2c
  800c538:	0800d871 	.word	0x0800d871
 
 0800c53c <netconn_recv_data>:
@@ -37702,7 +37702,7 @@ fs_open(struct fs_file *file, const char *name)
  800e3ca:	3710      	adds	r7, #16
  800e3cc:	46bd      	mov	sp, r7
  800e3ce:	bd80      	pop	{r7, pc}
- 800e3d0:	0802801c 	.word	0x0802801c
+ 800e3d0:	08028be0 	.word	0x08028be0
 
 0800e3d4 <fs_close>:
 
@@ -39680,7 +39680,7 @@ http_find_file(struct http_state *hs, const char *uri, int is_09)
  800ee6c:	46bd      	mov	sp, r7
  800ee6e:	bd80      	pop	{r7, pc}
  800ee70:	20004e70 	.word	0x20004e70
- 800ee74:	08028030 	.word	0x08028030
+ 800ee74:	08028bf4 	.word	0x08028bf4
 
 0800ee78 <http_init_file>:
  *         another err_t otherwise
@@ -40431,7 +40431,7 @@ httpd_init_pcb(struct altcp_pcb *pcb, u16_t port)
  800f29a:	46bd      	mov	sp, r7
  800f29c:	bd80      	pop	{r7, pc}
  800f29e:	bf00      	nop
- 800f2a0:	08028168 	.word	0x08028168
+ 800f2a0:	08028d2c 	.word	0x08028d2c
  800f2a4:	08024948 	.word	0x08024948
  800f2a8:	08024aec 	.word	0x08024aec
  800f2ac:	08024990 	.word	0x08024990
@@ -42070,7 +42070,7 @@ memp_init(void)
  800fc62:	3708      	adds	r7, #8
  800fc64:	46bd      	mov	sp, r7
  800fc66:	bd80      	pop	{r7, pc}
- 800fc68:	080280f4 	.word	0x080280f4
+ 800fc68:	08028cb8 	.word	0x08028cb8
 
 0800fc6c <do_memp_malloc_pool>:
 #if !MEMP_OVERFLOW_CHECK
@@ -42212,7 +42212,7 @@ memp_malloc_fn(memp_t type, const char *file, const int line)
  800fd0c:	08024dbc 	.word	0x08024dbc
  800fd10:	08024e4c 	.word	0x08024e4c
  800fd14:	08024e10 	.word	0x08024e10
- 800fd18:	080280f4 	.word	0x080280f4
+ 800fd18:	08028cb8 	.word	0x08028cb8
 
 0800fd1c <do_memp_free_pool>:
 
@@ -42341,7 +42341,7 @@ memp_free(memp_t type, void *mem)
  800fdb8:	08024dbc 	.word	0x08024dbc
  800fdbc:	08024e8c 	.word	0x08024e8c
  800fdc0:	08024e10 	.word	0x08024e10
- 800fdc4:	080280f4 	.word	0x080280f4
+ 800fdc4:	08028cb8 	.word	0x08028cb8
 
 0800fdc8 <netif_init>:
 }
@@ -42627,7 +42627,7 @@ netif_add(struct netif *netif,
  800ff4c:	08024f3c 	.word	0x08024f3c
  800ff50:	08024ef8 	.word	0x08024ef8
  800ff54:	08024f58 	.word	0x08024f58
- 800ff58:	08028168 	.word	0x08028168
+ 800ff58:	08028d2c 	.word	0x08028d2c
  800ff5c:	08010295 	.word	0x08010295
  800ff60:	20004ef4 	.word	0x20004ef4
  800ff64:	2000be04 	.word	0x2000be04
@@ -43002,7 +43002,7 @@ netif_set_addr(struct netif *netif, const ip4_addr_t *ipaddr, const ip4_addr_t *
  801012e:	46bd      	mov	sp, r7
  8010130:	bd80      	pop	{r7, pc}
  8010132:	bf00      	nop
- 8010134:	08028168 	.word	0x08028168
+ 8010134:	08028d2c 	.word	0x08028d2c
 
 08010138 <netif_set_default>:
  *
@@ -45620,7 +45620,7 @@ tcp_listen_closed(struct tcp_pcb *pcb)
  8011098:	08025688 	.word	0x08025688
  801109c:	0802561c 	.word	0x0802561c
  80110a0:	08025694 	.word	0x08025694
- 80110a4:	08028140 	.word	0x08028140
+ 80110a4:	08028d04 	.word	0x08028d04
 
 080110a8 <tcp_close_shutdown>:
  * @return ERR_OK if connection has been closed
@@ -46665,12 +46665,12 @@ tcp_bind(struct tcp_pcb *pcb, const ip_addr_t *ipaddr, u16_t port)
  80116f2:	3720      	adds	r7, #32
  80116f4:	46bd      	mov	sp, r7
  80116f6:	bd80      	pop	{r7, pc}
- 80116f8:	08028168 	.word	0x08028168
+ 80116f8:	08028d2c 	.word	0x08028d2c
  80116fc:	080255d8 	.word	0x080255d8
  8011700:	0802576c 	.word	0x0802576c
  8011704:	0802561c 	.word	0x0802561c
  8011708:	08025784 	.word	0x08025784
- 801170c:	08028140 	.word	0x08028140
+ 801170c:	08028d04 	.word	0x08028d04
  8011710:	2000be20 	.word	0x2000be20
 
 08011714 <tcp_accept_null>:
@@ -47280,7 +47280,7 @@ again:
  8011a9e:	f85d 7b04 	ldr.w	r7, [sp], #4
  8011aa2:	4770      	bx	lr
  8011aa4:	2000002c 	.word	0x2000002c
- 8011aa8:	08028140 	.word	0x08028140
+ 8011aa8:	08028d04 	.word	0x08028d04
 
 08011aac <tcp_slowtmr>:
  *
@@ -47644,8 +47644,8 @@ tcp_slowtmr_start:
  8011d28:	08025974 	.word	0x08025974
  8011d2c:	080259a4 	.word	0x080259a4
  8011d30:	080259d8 	.word	0x080259d8
- 8011d34:	08028138 	.word	0x08028138
- 8011d38:	08028128 	.word	0x08028128
+ 8011d34:	08028cfc 	.word	0x08028cfc
+ 8011d38:	08028cec 	.word	0x08028cec
  8011d3c:	f647 72ff 	movw	r2, #32767	; 0x7fff
  8011d40:	6afb      	ldr	r3, [r7, #44]	; 0x2c
  8011d42:	f8a3 2040 	strh.w	r2, [r3, #64]	; 0x40
@@ -61118,7 +61118,7 @@ void sys_timeouts_init(void)
  801723a:	46bd      	mov	sp, r7
  801723c:	bd80      	pop	{r7, pc}
  801723e:	bf00      	nop
- 8017240:	08028150 	.word	0x08028150
+ 8017240:	08028d14 	.word	0x08028d14
  8017244:	080171a1 	.word	0x080171a1
 
 08017248 <sys_timeout>:
@@ -62823,7 +62823,7 @@ udp_bind(struct udp_pcb *pcb, const ip_addr_t *ipaddr, u16_t port)
  8017bc6:	3718      	adds	r7, #24
  8017bc8:	46bd      	mov	sp, r7
  8017bca:	bd80      	pop	{r7, pc}
- 8017bcc:	08028168 	.word	0x08028168
+ 8017bcc:	08028d2c 	.word	0x08028d2c
  8017bd0:	08026ac4 	.word	0x08026ac4
  8017bd4:	08026d8c 	.word	0x08026d8c
  8017bd8:	08026b18 	.word	0x08026b18
@@ -64805,7 +64805,7 @@ etharp_output(struct netif *netif, struct pbuf *q, const ip4_addr_t *ipaddr)
  80187d0:	08026ea0 	.word	0x08026ea0
  80187d4:	08026fc8 	.word	0x08026fc8
  80187d8:	08026f68 	.word	0x08026f68
- 80187dc:	0802816c 	.word	0x0802816c
+ 80187dc:	08028d30 	.word	0x08028d30
  80187e0:	20005028 	.word	0x20005028
  80187e4:	20004f38 	.word	0x20004f38
 
@@ -65432,7 +65432,7 @@ etharp_request_dst(struct netif *netif, const ip4_addr_t *ipaddr, const struct e
  8018bb6:	46bd      	mov	sp, r7
  8018bb8:	bd80      	pop	{r7, pc}
  8018bba:	bf00      	nop
- 8018bbc:	08028174 	.word	0x08028174
+ 8018bbc:	08028d38 	.word	0x08028d38
 
 08018bc0 <etharp_request>:
  *         ERR_MEM if the ARP packet couldn't be allocated
@@ -65459,7 +65459,7 @@ etharp_request(struct netif *netif, const ip4_addr_t *ipaddr)
  8018bda:	46bd      	mov	sp, r7
  8018bdc:	bd80      	pop	{r7, pc}
  8018bde:	bf00      	nop
- 8018be0:	0802816c 	.word	0x0802816c
+ 8018be0:	08028d30 	.word	0x08028d30
 
 08018be4 <icmp_input>:
  * @param p the icmp echo request packet, p->payload pointing to the icmp header
@@ -67050,7 +67050,7 @@ ip4_output_if_src(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest,
  801941c:	080271d8 	.word	0x080271d8
  8019420:	08027200 	.word	0x08027200
  8019424:	2000502a 	.word	0x2000502a
- 8019428:	08028168 	.word	0x08028168
+ 8019428:	08028d2c 	.word	0x08028d2c
 
 0801942c <ip4_addr_isbroadcast_u32>:
  * @param netif the network interface against which the address is checked
@@ -69471,7 +69471,7 @@ free_and_return:
  801a232:	46bd      	mov	sp, r7
  801a234:	bd80      	pop	{r7, pc}
  801a236:	bf00      	nop
- 801a238:	0802816c 	.word	0x0802816c
+ 801a238:	08028d30 	.word	0x08028d30
 
 0801a23c <ethernet_output>:
  * @return ERR_OK if the packet was sent, any other err_t on failure
@@ -70175,7 +70175,7 @@ void sys_init(void)
 }
  801a58c:	bf00      	nop
  801a58e:	bd80      	pop	{r7, pc}
- 801a590:	0802817c 	.word	0x0802817c
+ 801a590:	08028d40 	.word	0x08028d40
  801a594:	2000be34 	.word	0x2000be34
 
 0801a598 <sys_mutex_new>:
@@ -70414,10 +70414,10 @@ void sys_arch_unprotect(sys_prot_t pval)
  801a6ca:	4798      	blx	r3
  801a6cc:	3601      	adds	r6, #1
  801a6ce:	e7f2      	b.n	801a6b6 <__libc_init_array+0x1e>
- 801a6d0:	080286b0 	.word	0x080286b0
- 801a6d4:	080286b0 	.word	0x080286b0
- 801a6d8:	080286b0 	.word	0x080286b0
- 801a6dc:	080286b8 	.word	0x080286b8
+ 801a6d0:	08029270 	.word	0x08029270
+ 801a6d4:	08029270 	.word	0x08029270
+ 801a6d8:	08029270 	.word	0x08029270
+ 801a6dc:	08029278 	.word	0x08029278
 
 0801a6e0 <localtime_r>:
  801a6e0:	e92d 41f3 	stmdb	sp!, {r0, r1, r4, r5, r6, r7, r8, lr}
@@ -70616,7 +70616,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  801a8be:	e7de      	b.n	801a87e <localtime_r+0x19e>
  801a8c0:	2301      	movs	r3, #1
  801a8c2:	e7f9      	b.n	801a8b8 <localtime_r+0x1d8>
- 801a8c4:	080282ec 	.word	0x080282ec
+ 801a8c4:	08028eb0 	.word	0x08028eb0
  801a8c8:	2000504c 	.word	0x2000504c
 
 0801a8cc <memcmp>:
@@ -70861,7 +70861,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  801aaee:	231d      	movs	r3, #29
  801aaf0:	e7ae      	b.n	801aa50 <validate_structure+0x108>
  801aaf2:	bf00      	nop
- 801aaf4:	0802828c 	.word	0x0802828c
+ 801aaf4:	08028e50 	.word	0x08028e50
 
 0801aaf8 <mktime>:
  801aaf8:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
@@ -71154,7 +71154,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  801ae2e:	f04f 3aff 	mov.w	sl, #4294967295
  801ae32:	f04f 3bff 	mov.w	fp, #4294967295
  801ae36:	e7ca      	b.n	801adce <mktime+0x2d6>
- 801ae38:	080282bc 	.word	0x080282bc
+ 801ae38:	08028e80 	.word	0x08028e80
  801ae3c:	00015180 	.word	0x00015180
  801ae40:	2000504c 	.word	0x2000504c
 
@@ -71424,7 +71424,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  801b0ae:	230a      	movs	r3, #10
  801b0b0:	e7ad      	b.n	801b00e <_strtol_l.isra.0+0x5e>
  801b0b2:	bf00      	nop
- 801b0b4:	08028185 	.word	0x08028185
+ 801b0b4:	08028d49 	.word	0x08028d49
 
 0801b0b8 <_strtol_r>:
  801b0b8:	f7ff bf7a 	b.w	801afb0 <_strtol_l.isra.0>
@@ -71834,10 +71834,10 @@ void sys_arch_unprotect(sys_prot_t pval)
  801b510:	e00d      	b.n	801b52e <_svfprintf_r+0x45e>
  801b512:	bf00      	nop
  801b514:	7fefffff 	.word	0x7fefffff
- 801b518:	0802834c 	.word	0x0802834c
- 801b51c:	08028350 	.word	0x08028350
- 801b520:	08028354 	.word	0x08028354
- 801b524:	08028358 	.word	0x08028358
+ 801b518:	08028f10 	.word	0x08028f10
+ 801b51c:	08028f14 	.word	0x08028f14
+ 801b520:	08028f18 	.word	0x08028f18
+ 801b524:	08028f1c 	.word	0x08028f1c
  801b528:	9003      	str	r0, [sp, #12]
  801b52a:	f10d 0bd4 	add.w	fp, sp, #212	; 0xd4
  801b52e:	f448 7380 	orr.w	r3, r8, #256	; 0x100
@@ -72159,12 +72159,12 @@ void sys_arch_unprotect(sys_prot_t pval)
  801b852:	ac25      	add	r4, sp, #148	; 0x94
  801b854:	e00c      	b.n	801b870 <_svfprintf_r+0x7a0>
  801b856:	bf00      	nop
- 801b858:	0802836d 	.word	0x0802836d
- 801b85c:	0802835c 	.word	0x0802835c
+ 801b858:	08028f31 	.word	0x08028f31
+ 801b85c:	08028f20 	.word	0x08028f20
  801b860:	40300000 	.word	0x40300000
  801b864:	3fe00000 	.word	0x3fe00000
- 801b868:	08028380 	.word	0x08028380
- 801b86c:	08028390 	.word	0x08028390
+ 801b868:	08028f44 	.word	0x08028f44
+ 801b86c:	08028f54 	.word	0x08028f54
  801b870:	f418 7f80 	tst.w	r8, #256	; 0x100
  801b874:	9e24      	ldr	r6, [sp, #144]	; 0x90
  801b876:	f040 82b7 	bne.w	801bde8 <_svfprintf_r+0xd18>
@@ -72726,8 +72726,8 @@ void sys_arch_unprotect(sys_prot_t pval)
  801bdda:	460c      	mov	r4, r1
  801bddc:	e548      	b.n	801b870 <_svfprintf_r+0x7a0>
  801bdde:	bf00      	nop
- 801bde0:	0802835c 	.word	0x0802835c
- 801bde4:	0802836d 	.word	0x0802836d
+ 801bde0:	08028f20 	.word	0x08028f20
+ 801bde4:	08028f31 	.word	0x08028f31
  801bde8:	9b07      	ldr	r3, [sp, #28]
  801bdea:	2b65      	cmp	r3, #101	; 0x65
  801bdec:	f340 8232 	ble.w	801c254 <_svfprintf_r+0x1184>
@@ -72924,8 +72924,8 @@ void sys_arch_unprotect(sys_prot_t pval)
  801bfb2:	4623      	mov	r3, r4
  801bfb4:	e7b8      	b.n	801bf28 <_svfprintf_r+0xe58>
  801bfb6:	bf00      	nop
- 801bfb8:	0802837e 	.word	0x0802837e
- 801bfbc:	08028390 	.word	0x08028390
+ 801bfb8:	08028f42 	.word	0x08028f42
+ 801bfbc:	08028f54 	.word	0x08028f54
  801bfc0:	9b05      	ldr	r3, [sp, #20]
  801bfc2:	42ab      	cmp	r3, r5
  801bfc4:	bfa8      	it	ge
@@ -73207,7 +73207,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  801c248:	f040 80bc 	bne.w	801c3c4 <_svfprintf_r+0x12f4>
  801c24c:	ac25      	add	r4, sp, #148	; 0x94
  801c24e:	e726      	b.n	801c09e <_svfprintf_r+0xfce>
- 801c250:	08028390 	.word	0x08028390
+ 801c250:	08028f54 	.word	0x08028f54
  801c254:	9a05      	ldr	r2, [sp, #20]
  801c256:	9b23      	ldr	r3, [sp, #140]	; 0x8c
  801c258:	2a01      	cmp	r2, #1
@@ -73429,8 +73429,8 @@ void sys_arch_unprotect(sys_prot_t pval)
  801c47e:	e9cd 3308 	strd	r3, r3, [sp, #32]
  801c482:	461d      	mov	r5, r3
  801c484:	f7ff b94c 	b.w	801b720 <_svfprintf_r+0x650>
- 801c488:	08028390 	.word	0x08028390
- 801c48c:	08028380 	.word	0x08028380
+ 801c488:	08028f54 	.word	0x08028f54
+ 801c48c:	08028f44 	.word	0x08028f44
 
 0801c490 <__tzcalc_limits>:
  801c490:	e92d 4ff7 	stmdb	sp!, {r0, r1, r2, r4, r5, r6, r7, r8, r9, sl, fp, lr}
@@ -73553,7 +73553,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  801c5d4:	2000      	movs	r0, #0
  801c5d6:	e7bd      	b.n	801c554 <__tzcalc_limits+0xc4>
  801c5d8:	00015180 	.word	0x00015180
- 801c5dc:	080282ec 	.word	0x080282ec
+ 801c5dc:	08028eb0 	.word	0x08028eb0
 
 0801c5e0 <__tz_lock>:
  801c5e0:	4801      	ldr	r0, [pc, #4]	; (801c5e8 <__tz_lock+0x8>)
@@ -73842,17 +73842,17 @@ void sys_arch_unprotect(sys_prot_t pval)
  801c8c6:	723b      	strb	r3, [r7, #8]
  801c8c8:	6178      	str	r0, [r7, #20]
  801c8ca:	e784      	b.n	801c7d6 <_tzset_unlocked_r+0x1d2>
- 801c8cc:	080283a0 	.word	0x080283a0
+ 801c8cc:	08028f64 	.word	0x08028f64
  801c8d0:	20005048 	.word	0x20005048
  801c8d4:	20005050 	.word	0x20005050
- 801c8d8:	080283a3 	.word	0x080283a3
+ 801c8d8:	08028f67 	.word	0x08028f67
  801c8dc:	2000504c 	.word	0x2000504c
  801c8e0:	20000468 	.word	0x20000468
  801c8e4:	2000503d 	.word	0x2000503d
- 801c8e8:	080283a7 	.word	0x080283a7
- 801c8ec:	080283ca 	.word	0x080283ca
- 801c8f0:	080283b6 	.word	0x080283b6
- 801c8f4:	080283c9 	.word	0x080283c9
+ 801c8e8:	08028f6b 	.word	0x08028f6b
+ 801c8ec:	08028f8e 	.word	0x08028f8e
+ 801c8f0:	08028f7a 	.word	0x08028f7a
+ 801c8f4:	08028f8d 	.word	0x08028f8d
  801c8f8:	20005032 	.word	0x20005032
  801c8fc:	00000000 	.word	0x00000000
 
@@ -74287,10 +74287,10 @@ void sys_arch_unprotect(sys_prot_t pval)
  801cdb4:	e5e9      	b.n	801c98a <_vfprintf_r+0x8a>
  801cdb6:	bf00      	nop
  801cdb8:	7fefffff 	.word	0x7fefffff
- 801cdbc:	0802834c 	.word	0x0802834c
- 801cdc0:	08028350 	.word	0x08028350
- 801cdc4:	08028354 	.word	0x08028354
- 801cdc8:	08028358 	.word	0x08028358
+ 801cdbc:	08028f10 	.word	0x08028f10
+ 801cdc0:	08028f14 	.word	0x08028f14
+ 801cdc4:	08028f18 	.word	0x08028f18
+ 801cdc8:	08028f1c 	.word	0x08028f1c
  801cdcc:	f1b8 3fff 	cmp.w	r8, #4294967295
  801cdd0:	f000 81e0 	beq.w	801d194 <_vfprintf_r+0x894>
  801cdd4:	9b08      	ldr	r3, [sp, #32]
@@ -74621,12 +74621,12 @@ void sys_arch_unprotect(sys_prot_t pval)
  801d11e:	9624      	str	r6, [sp, #144]	; 0x90
  801d120:	e00c      	b.n	801d13c <_vfprintf_r+0x83c>
  801d122:	bf00      	nop
- 801d124:	0802836d 	.word	0x0802836d
- 801d128:	0802835c 	.word	0x0802835c
+ 801d124:	08028f31 	.word	0x08028f31
+ 801d128:	08028f20 	.word	0x08028f20
  801d12c:	40300000 	.word	0x40300000
  801d130:	3fe00000 	.word	0x3fe00000
- 801d134:	080283dc 	.word	0x080283dc
- 801d138:	080283ec 	.word	0x080283ec
+ 801d134:	08028fa0 	.word	0x08028fa0
+ 801d138:	08028fb0 	.word	0x08028fb0
  801d13c:	9b23      	ldr	r3, [sp, #140]	; 0x8c
  801d13e:	3301      	adds	r3, #1
  801d140:	2b07      	cmp	r3, #7
@@ -75190,8 +75190,8 @@ void sys_arch_unprotect(sys_prot_t pval)
  801d6a6:	460c      	mov	r4, r1
  801d6a8:	e530      	b.n	801d10c <_vfprintf_r+0x80c>
  801d6aa:	bf00      	nop
- 801d6ac:	0802835c 	.word	0x0802835c
- 801d6b0:	0802836d 	.word	0x0802836d
+ 801d6ac:	08028f20 	.word	0x08028f20
+ 801d6b0:	08028f31 	.word	0x08028f31
  801d6b4:	9b07      	ldr	r3, [sp, #28]
  801d6b6:	2b65      	cmp	r3, #101	; 0x65
  801d6b8:	f340 8242 	ble.w	801db40 <_vfprintf_r+0x1240>
@@ -75389,8 +75389,8 @@ void sys_arch_unprotect(sys_prot_t pval)
  801d87e:	4623      	mov	r3, r4
  801d880:	e7b8      	b.n	801d7f4 <_vfprintf_r+0xef4>
  801d882:	bf00      	nop
- 801d884:	0802837e 	.word	0x0802837e
- 801d888:	080283ec 	.word	0x080283ec
+ 801d884:	08028f42 	.word	0x08028f42
+ 801d888:	08028fb0 	.word	0x08028fb0
  801d88c:	9b05      	ldr	r3, [sp, #20]
  801d88e:	42ab      	cmp	r3, r5
  801d890:	bfa8      	it	ge
@@ -75677,7 +75677,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  801db36:	ac25      	add	r4, sp, #148	; 0x94
  801db38:	e71e      	b.n	801d978 <_vfprintf_r+0x1078>
  801db3a:	bf00      	nop
- 801db3c:	080283ec 	.word	0x080283ec
+ 801db3c:	08028fb0 	.word	0x08028fb0
  801db40:	9a05      	ldr	r2, [sp, #20]
  801db42:	9b23      	ldr	r3, [sp, #140]	; 0x8c
  801db44:	2a01      	cmp	r2, #1
@@ -75898,8 +75898,8 @@ void sys_arch_unprotect(sys_prot_t pval)
  801dd5e:	9303      	str	r3, [sp, #12]
  801dd60:	e415      	b.n	801d58e <_vfprintf_r+0xc8e>
  801dd62:	bf00      	nop
- 801dd64:	080283ec 	.word	0x080283ec
- 801dd68:	080283dc 	.word	0x080283dc
+ 801dd64:	08028fb0 	.word	0x08028fb0
+ 801dd68:	08028fa0 	.word	0x08028fa0
 
 0801dd6c <__sbprintf>:
  801dd6c:	b570      	push	{r4, r5, r6, lr}
@@ -76440,13 +76440,13 @@ void sys_arch_unprotect(sys_prot_t pval)
  801e2c8:	509f79fb 	.word	0x509f79fb
  801e2cc:	3fd34413 	.word	0x3fd34413
  801e2d0:	7ff00000 	.word	0x7ff00000
- 801e2d4:	080283fc 	.word	0x080283fc
- 801e2d8:	08028400 	.word	0x08028400
- 801e2dc:	0802837f 	.word	0x0802837f
+ 801e2d4:	08028fc0 	.word	0x08028fc0
+ 801e2d8:	08028fc4 	.word	0x08028fc4
+ 801e2dc:	08028f43 	.word	0x08028f43
  801e2e0:	3ff80000 	.word	0x3ff80000
- 801e2e4:	08028508 	.word	0x08028508
- 801e2e8:	08028409 	.word	0x08028409
- 801e2ec:	0802841a 	.word	0x0802841a
+ 801e2e4:	080290c8 	.word	0x080290c8
+ 801e2e8:	08028fcd 	.word	0x08028fcd
+ 801e2ec:	08028fde 	.word	0x08028fde
  801e2f0:	9b00      	ldr	r3, [sp, #0]
  801e2f2:	6423      	str	r3, [r4, #64]	; 0x40
  801e2f4:	9b01      	ldr	r3, [sp, #4]
@@ -76734,8 +76734,8 @@ void sys_arch_unprotect(sys_prot_t pval)
  801e60c:	d0f8      	beq.n	801e600 <_dtoa_r+0x600>
  801e60e:	f8dd a01c 	ldr.w	sl, [sp, #28]
  801e612:	e049      	b.n	801e6a8 <_dtoa_r+0x6a8>
- 801e614:	08028508 	.word	0x08028508
- 801e618:	080284e0 	.word	0x080284e0
+ 801e614:	080290c8 	.word	0x080290c8
+ 801e618:	080290a0 	.word	0x080290a0
  801e61c:	3ff00000 	.word	0x3ff00000
  801e620:	40240000 	.word	0x40240000
  801e624:	401c0000 	.word	0x401c0000
@@ -77322,9 +77322,9 @@ void sys_arch_unprotect(sys_prot_t pval)
  801eb96:	4683      	mov	fp, r0
  801eb98:	e7eb      	b.n	801eb72 <_dtoa_r+0xb72>
  801eb9a:	bf00      	nop
- 801eb9c:	08028409 	.word	0x08028409
- 801eba0:	0802837e 	.word	0x0802837e
- 801eba4:	08028400 	.word	0x08028400
+ 801eb9c:	08028fcd 	.word	0x08028fcd
+ 801eba0:	08028f42 	.word	0x08028f42
+ 801eba4:	08028fc4 	.word	0x08028fc4
 
 0801eba8 <__errno>:
  801eba8:	4b01      	ldr	r3, [pc, #4]	; (801ebb0 <__errno+0x8>)
@@ -77604,8 +77604,8 @@ void sys_arch_unprotect(sys_prot_t pval)
  801ee12:	4798      	blx	r3
  801ee14:	e7f5      	b.n	801ee02 <__libc_fini_array+0xa>
  801ee16:	bf00      	nop
- 801ee18:	080286b8 	.word	0x080286b8
- 801ee1c:	080286bc 	.word	0x080286bc
+ 801ee18:	08029278 	.word	0x08029278
+ 801ee1c:	0802927c 	.word	0x0802927c
 
 0801ee20 <_malloc_trim_r>:
  801ee20:	e92d 41f0 	stmdb	sp!, {r4, r5, r6, r7, r8, lr}
@@ -78695,8 +78695,8 @@ void sys_arch_unprotect(sys_prot_t pval)
  801f8fc:	4620      	mov	r0, r4
  801f8fe:	e8bd 81f0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, pc}
  801f902:	bf00      	nop
- 801f904:	08028409 	.word	0x08028409
- 801f908:	08028479 	.word	0x08028479
+ 801f904:	08028fcd 	.word	0x08028fcd
+ 801f908:	0802903d 	.word	0x0802903d
 
 0801f90c <__hi0bits>:
  801f90c:	0c03      	lsrs	r3, r0, #16
@@ -78790,8 +78790,8 @@ void sys_arch_unprotect(sys_prot_t pval)
  801f9ca:	6103      	str	r3, [r0, #16]
  801f9cc:	bd10      	pop	{r4, pc}
  801f9ce:	bf00      	nop
- 801f9d0:	08028409 	.word	0x08028409
- 801f9d4:	08028479 	.word	0x08028479
+ 801f9d0:	08028fcd 	.word	0x08028fcd
+ 801f9d4:	0802903d 	.word	0x0802903d
 
 0801f9d8 <__multiply>:
  801f9d8:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
@@ -78911,8 +78911,8 @@ void sys_arch_unprotect(sys_prot_t pval)
  801fb16:	3f01      	subs	r7, #1
  801fb18:	e7a1      	b.n	801fa5e <__multiply+0x86>
  801fb1a:	bf00      	nop
- 801fb1c:	08028409 	.word	0x08028409
- 801fb20:	08028479 	.word	0x08028479
+ 801fb1c:	08028fcd 	.word	0x08028fcd
+ 801fb20:	0802903d 	.word	0x0802903d
 
 0801fb24 <__pow5mult>:
  801fb24:	e92d 43f8 	stmdb	sp!, {r3, r4, r5, r6, r7, r8, r9, lr}
@@ -78965,7 +78965,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  801fb98:	4638      	mov	r0, r7
  801fb9a:	e8bd 83f8 	ldmia.w	sp!, {r3, r4, r5, r6, r7, r8, r9, pc}
  801fb9e:	bf00      	nop
- 801fba0:	080285d0 	.word	0x080285d0
+ 801fba0:	08029190 	.word	0x08029190
 
 0801fba4 <__lshift>:
  801fba4:	e92d 47f0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, lr}
@@ -79044,8 +79044,8 @@ void sys_arch_unprotect(sys_prot_t pval)
  801fc6e:	d8f9      	bhi.n	801fc64 <__lshift+0xc0>
  801fc70:	e7ea      	b.n	801fc48 <__lshift+0xa4>
  801fc72:	bf00      	nop
- 801fc74:	08028409 	.word	0x08028409
- 801fc78:	08028479 	.word	0x08028479
+ 801fc74:	08028fcd 	.word	0x08028fcd
+ 801fc78:	0802903d 	.word	0x0802903d
 
 0801fc7c <__mcmp>:
  801fc7c:	b530      	push	{r4, r5, lr}
@@ -79170,8 +79170,8 @@ void sys_arch_unprotect(sys_prot_t pval)
  801fdb6:	e7e0      	b.n	801fd7a <__mdiff+0xc6>
  801fdb8:	3e01      	subs	r6, #1
  801fdba:	e7ea      	b.n	801fd92 <__mdiff+0xde>
- 801fdbc:	08028409 	.word	0x08028409
- 801fdc0:	08028479 	.word	0x08028479
+ 801fdbc:	08028fcd 	.word	0x08028fcd
+ 801fdc0:	0802903d 	.word	0x0802903d
 
 0801fdc4 <__d2b>:
  801fdc4:	e92d 43f7 	stmdb	sp!, {r0, r1, r2, r4, r5, r6, r7, r8, r9, lr}
@@ -79240,8 +79240,8 @@ void sys_arch_unprotect(sys_prot_t pval)
  801fe6a:	f7ff fd4f 	bl	801f90c <__hi0bits>
  801fe6e:	ebc0 1042 	rsb	r0, r0, r2, lsl #5
  801fe72:	e7df      	b.n	801fe34 <__d2b+0x70>
- 801fe74:	08028409 	.word	0x08028409
- 801fe78:	08028479 	.word	0x08028479
+ 801fe74:	08028fcd 	.word	0x08028fcd
+ 801fe78:	0802903d 	.word	0x0802903d
 
 0801fe7c <frexp>:
  801fe7c:	b570      	push	{r4, r5, r6, lr}
@@ -79505,7 +79505,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  80200ee:	230a      	movs	r3, #10
  80200f0:	e7ab      	b.n	802004a <_strtoul_l.isra.0+0x4a>
  80200f2:	bf00      	nop
- 80200f4:	08028185 	.word	0x08028185
+ 80200f4:	08028d49 	.word	0x08028d49
 
 080200f8 <_strtoul_r>:
  80200f8:	f7ff bf82 	b.w	8020000 <_strtoul_l.isra.0>
@@ -79999,7 +79999,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  80205ee:	2310      	movs	r3, #16
  80205f0:	e7f2      	b.n	80205d8 <__ssvfiscanf_r+0x2ac>
  80205f2:	bf00      	nop
- 80205f4:	08028185 	.word	0x08028185
+ 80205f4:	08028d49 	.word	0x08028d49
  80205f8:	0801b0b9 	.word	0x0801b0b9
  80205fc:	080200f9 	.word	0x080200f9
  8020600:	f049 0901 	orr.w	r9, r9, #1
@@ -80276,7 +80276,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  80208dc:	f8ca 0000 	str.w	r0, [sl]
  80208e0:	e7e6      	b.n	80208b0 <__ssvfiscanf_r+0x584>
  80208e2:	bf00      	nop
- 80208e4:	08028185 	.word	0x08028185
+ 80208e4:	08028d49 	.word	0x08028d49
  80208e8:	0801b0b9 	.word	0x0801b0b9
  80208ec:	69ba      	ldr	r2, [r7, #24]
  80208ee:	b1e2      	cbz	r2, 802092a <__ssvfiscanf_r+0x5fe>
@@ -81012,7 +81012,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  802108c:	f7ff b96a 	b.w	8020364 <__ssvfiscanf_r+0x38>
  8021090:	46ca      	mov	sl, r9
  8021092:	e7b2      	b.n	8020ffa <__ssvfiscanf_r+0xcce>
- 8021094:	08028185 	.word	0x08028185
+ 8021094:	08028d49 	.word	0x08028d49
  8021098:	6abb      	ldr	r3, [r7, #40]	; 0x28
  802109a:	3b01      	subs	r3, #1
  802109c:	2b26      	cmp	r3, #38	; 0x26
@@ -81191,7 +81191,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  8021264:	601e      	str	r6, [r3, #0]
  8021266:	f7ff ba0f 	b.w	8020688 <__ssvfiscanf_r+0x35c>
  802126a:	bf00      	nop
- 802126c:	080285dc 	.word	0x080285dc
+ 802126c:	0802919c 	.word	0x0802919c
  8021270:	080200f9 	.word	0x080200f9
 
 08021274 <sysconf>:
@@ -81685,7 +81685,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  80217a8:	f04a 0a02 	orr.w	sl, sl, #2
  80217ac:	2302      	movs	r3, #2
  80217ae:	e7c9      	b.n	8021744 <_vfiprintf_r+0x3dc>
- 80217b0:	0802835c 	.word	0x0802835c
+ 80217b0:	08028f20 	.word	0x08028f20
  80217b4:	9b00      	ldr	r3, [sp, #0]
  80217b6:	46a3      	mov	fp, r4
  80217b8:	2500      	movs	r5, #0
@@ -82017,9 +82017,9 @@ void sys_arch_unprotect(sys_prot_t pval)
  8021afa:	ae0f      	add	r6, sp, #60	; 0x3c
  8021afc:	e6b7      	b.n	802186e <_vfiprintf_r+0x506>
  8021afe:	bf00      	nop
- 8021b00:	080285fe 	.word	0x080285fe
- 8021b04:	0802860e 	.word	0x0802860e
- 8021b08:	0802836d 	.word	0x0802836d
+ 8021b00:	080291be 	.word	0x080291be
+ 8021b04:	080291ce 	.word	0x080291ce
+ 8021b08:	08028f31 	.word	0x08028f31
  8021b0c:	aa0c      	add	r2, sp, #48	; 0x30
  8021b0e:	4639      	mov	r1, r7
  8021b10:	4648      	mov	r0, r9
@@ -82166,7 +82166,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  8021c6e:	9300      	str	r3, [sp, #0]
  8021c70:	e5b5      	b.n	80217de <_vfiprintf_r+0x476>
  8021c72:	bf00      	nop
- 8021c74:	080285fe 	.word	0x080285fe
+ 8021c74:	080291be 	.word	0x080291be
 
 08021c78 <__sbprintf>:
  8021c78:	b570      	push	{r4, r5, r6, lr}
@@ -82282,7 +82282,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  8021d90:	2000      	movs	r0, #0
  8021d92:	e7df      	b.n	8021d54 <__register_exitproc+0x38>
  8021d94:	20000470 	.word	0x20000470
- 8021d98:	08028288 	.word	0x08028288
+ 8021d98:	08028e4c 	.word	0x08028e4c
 
 08021d9c <__assert_func>:
  8021d9c:	b51f      	push	{r0, r1, r2, r3, r4, lr}
@@ -82305,9 +82305,9 @@ void sys_arch_unprotect(sys_prot_t pval)
  8021dc4:	e7f3      	b.n	8021dae <__assert_func+0x12>
  8021dc6:	bf00      	nop
  8021dc8:	20000038 	.word	0x20000038
- 8021dcc:	0802861e 	.word	0x0802861e
- 8021dd0:	0802862b 	.word	0x0802862b
- 8021dd4:	08028659 	.word	0x08028659
+ 8021dcc:	080291de 	.word	0x080291de
+ 8021dd0:	080291eb 	.word	0x080291eb
+ 8021dd4:	08029219 	.word	0x08029219
 
 08021dd8 <_calloc_r>:
  8021dd8:	b510      	push	{r4, lr}
@@ -82882,7 +82882,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  8022300:	f000 0008 	andls.w	r0, r0, #8
  8022304:	2000      	movhi	r0, #0
  8022306:	4770      	bx	lr
- 8022308:	08028185 	.word	0x08028185
+ 8022308:	08028d49 	.word	0x08028d49
 
 0802230c <__locale_mb_cur_max>:
  802230c:	4b01      	ldr	r3, [pc, #4]	; (8022314 <__locale_mb_cur_max+0x8>)
@@ -82931,7 +82931,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  8022364:	bdf0      	pop	{r4, r5, r6, r7, pc}
  8022366:	bf00      	nop
  8022368:	200008e0 	.word	0x200008e0
- 802236c:	08028659 	.word	0x08028659
+ 802236c:	08029219 	.word	0x08029219
 
 08022370 <__ascii_mbtowc>:
  8022370:	b082      	sub	sp, #8
@@ -83486,7 +83486,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  80228aa:	270a      	movs	r7, #10
  80228ac:	e78f      	b.n	80227ce <_strtoll_l.isra.0+0x46>
  80228ae:	bf00      	nop
- 80228b0:	08028185 	.word	0x08028185
+ 80228b0:	08028d49 	.word	0x08028d49
 
 080228b4 <_strtoll_r>:
  80228b4:	f7ff bf68 	b.w	8022788 <_strtoll_l.isra.0>
@@ -83611,7 +83611,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  80229e2:	d084      	beq.n	80228ee <_strtoull_l.isra.0+0x36>
  80229e4:	260a      	movs	r6, #10
  80229e6:	e78a      	b.n	80228fe <_strtoull_l.isra.0+0x46>
- 80229e8:	08028185 	.word	0x08028185
+ 80229e8:	08028d49 	.word	0x08028d49
 
 080229ec <_strtoull_r>:
  80229ec:	f7ff bf64 	b.w	80228b8 <_strtoull_l.isra.0>
@@ -84127,7 +84127,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  8022ed8:	8800759c 	.word	0x8800759c
  8022edc:	7e37e43c 	.word	0x7e37e43c
  8022ee0:	7ff00000 	.word	0x7ff00000
- 8022ee4:	08028659 	.word	0x08028659
+ 8022ee4:	08029219 	.word	0x08029219
  8022ee8:	433fffff 	.word	0x433fffff
  8022eec:	3ff00000 	.word	0x3ff00000
  8022ef0:	3fefffff 	.word	0x3fefffff
@@ -84603,11 +84603,11 @@ void sys_arch_unprotect(sys_prot_t pval)
  8023404:	43400000 	.word	0x43400000
  8023408:	0003988e 	.word	0x0003988e
  802340c:	000bb679 	.word	0x000bb679
- 8023410:	08028668 	.word	0x08028668
+ 8023410:	08029228 	.word	0x08029228
  8023414:	3ff00000 	.word	0x3ff00000
  8023418:	40080000 	.word	0x40080000
- 802341c:	08028688 	.word	0x08028688
- 8023420:	08028678 	.word	0x08028678
+ 802341c:	08029248 	.word	0x08029248
+ 8023420:	08029238 	.word	0x08029238
  8023424:	a3b5      	add	r3, pc, #724	; (adr r3, 80236fc <__ieee754_pow+0xa3c>)
  8023426:	e9d3 2300 	ldrd	r2, r3, [r3]
  802342a:	4640      	mov	r0, r8
@@ -85118,7 +85118,7 @@ void sys_arch_unprotect(sys_prot_t pval)
  80239aa:	fa44 f202 	asrne.w	r2, r4, r2
  80239ae:	ea41 0402 	orrne.w	r4, r1, r2
  80239b2:	e7cd      	b.n	8023950 <rint+0xa8>
- 80239b4:	08028698 	.word	0x08028698
+ 80239b4:	08029258 	.word	0x08029258
  80239b8:	000fffff 	.word	0x000fffff
  80239bc:	00000000 	.word	0x00000000
 
