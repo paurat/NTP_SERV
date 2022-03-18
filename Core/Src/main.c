@@ -34,6 +34,7 @@
 #include "lwip/apps/httpd.h"
 #include "myapi.h"
 #include "local_files.h"
+#include "MyFlash.h"
 //#include "localtypes.h"
 //#include "util.h"
 /* USER CODE END Includes */
@@ -285,7 +286,9 @@ int main(void)
   HAL_Delay(100);
 
   //start the web server
-
+  int offset =0;
+ ReadDeviceAddressOffset((char*) &user_info, sizeof(user_info), offset);
+ offset+=sizeof(user_info);
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */

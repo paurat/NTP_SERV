@@ -7,7 +7,7 @@
 #include "local_files.h"
 #include "myapi.h"
 #define JSON_SIZE 1608
-
+struct tm WebPageTime;
 int fs_read_custom(struct fs_file *file, char *buffer, int count){
 	return 0;
 }

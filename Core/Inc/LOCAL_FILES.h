@@ -17,7 +17,6 @@ extern const int offset_unix[];//={   -43200, -39600, -36000,  -34200, -32400, -
 
 
 //++++++++++++++++++++Structs+++++++++++++++++++++++++
-struct tm WebPageTime;
 
 struct user_info {
 	char ip[16];

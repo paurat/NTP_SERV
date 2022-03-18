@@ -1,6 +1,7 @@
 #include "post_api.h"
 #include "local_files.h"
 #include "jsmn.h"
+#include "MyFlash.h"
 #define USER_PASS_BUFSIZE 512
 #define mymin(a,b) \
 		({ __typeof__ (a) _a = (a); \
@@ -81,6 +82,10 @@ httpd_post_receive_data(void *connection, struct pbuf *p)
 				continue;
 			}
 		}
+        clearFlash();
+        int offset=0;
+        WriteDeviceAddressOffset((char*) &user_info, sizeof(user_info), offset);
+        offset+=sizeof(user_info);
 		/* not returning ERR_OK aborts the connection, so return ERR_OK unless the
        connection is unknown */
 		ret = ERR_OK;

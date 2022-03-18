@@ -91,7 +91,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Middlewares/Third_Party/LwIP/src/include/lwip/prot/iana.h \
  ../Core/Inc/myapi.h \
  ../Middlewares/Third_Party/LwIP/src/include/lwip/apps/fs.h \
- ../Core/Inc/local_files.h
+ ../Core/Inc/local_files.h ../Core/Inc/MyFlash.h
 
 ../Core/Inc/main.h:
 
@@ -280,3 +280,5 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Middlewares/Third_Party/LwIP/src/include/lwip/apps/fs.h:
 
 ../Core/Inc/local_files.h:
+
+../Core/Inc/MyFlash.h:
