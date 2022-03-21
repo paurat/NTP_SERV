@@ -10,7 +10,7 @@
 void clearFlash(){
 	static FLASH_EraseInitTypeDef EraseInitStruct;
 	/* Get the 1st sector to erase */
-	uint32_t FirstSector = 7;
+	uint32_t FirstSector = 7;//flash memory sector
 	/* Get the number of sector to erase from 1st sector*/
 	uint32_t NbOfSectors = 1;
 

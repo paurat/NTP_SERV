@@ -2,6 +2,9 @@
 #include "local_files.h"
 #include "jsmn.h"
 #include "MyFlash.h"
+#include "lwip.h"
+#include <sys/socket.h>
+#include <arpa/inet.h>
 #define USER_PASS_BUFSIZE 512
 #define mymin(a,b) \
 		({ __typeof__ (a) _a = (a); \
@@ -82,6 +85,9 @@ httpd_post_receive_data(void *connection, struct pbuf *p)
 				continue;
 			}
 		}
+		ip4_addr_t add;
+		inet_aton(user_info.ip, &add);
+		setIP(add.addr);
         clearFlash();
         int offset=0;
         WriteDeviceAddressOffset((char*) &user_info, sizeof(user_info), offset);
