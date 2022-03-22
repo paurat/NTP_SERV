@@ -35,6 +35,8 @@
 #include "myapi.h"
 #include "local_files.h"
 #include "MyFlash.h"
+#include <sys/socket.h>
+#include <arpa/inet.h>
 //#include "localtypes.h"
 //#include "util.h"
 /* USER CODE END Includes */
@@ -1342,6 +1344,10 @@ void StartDefaultTask(void const * argument)
 	/* Initialize tcp echo server */
 	tcpecho_init();
 
+
+	  ip4_addr_t add;
+	  inet_aton(user_info.ip, &add);
+	  setIP(add.addr);
 	/* Infinite loop */
 	for(;;)
 	{
