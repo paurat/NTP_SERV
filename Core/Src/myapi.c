@@ -6,6 +6,7 @@
  */
 #include "local_files.h"
 #include "myapi.h"
+#include "lwip.h"
 #define JSON_SIZE 1608
 struct tm WebPageTime;
 int fs_read_custom(struct fs_file *file, char *buffer, int count){
@@ -21,8 +22,10 @@ int fs_open_custom(struct fs_file *file, const char *name){
 		char* ip=user_info.ip;
 		int zone=user_info.zone;
 		char* contacts=user_info.contacts;
+		char macstr[18]; //string to be displayed on web page
+		sprintf (macstr, "%02X:%02X:%02X:%02X:%02X:%02X", getMAC(0), getMAC(1), getMAC(2), getMAC(3), getMAC(4), getMAC(5) );
 
-			offset = sprintf(generated_html,"[{\"IPaddress\":\"%s\",\"Timezone\":\"%d\",\"contacts\":\"%s\",\"software_version\":\"0.000000001\",\"mac\":\"no\"}]",ip,zone,contacts);
+			offset = sprintf(generated_html,"[{\"IPaddress\":\"%s\",\"Timezone\":\"%d\",\"contacts\":\"%s\",\"software_version\":\"0.000000001\",\"mac\":\"%s\"}]",ip,zone,contacts,macstr);
 	}
 	else if (!strcmp(name, "/uptime.json")) {
 		RTC_DateTypeDef dateStruct;
