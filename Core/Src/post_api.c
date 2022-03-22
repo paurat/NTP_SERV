@@ -71,6 +71,14 @@ httpd_post_receive_data(void *connection, struct pbuf *p)
 				i++;
 				continue;
 			}
+			if (jsoneq(buf_data, &t[i], "NetMask") == 0) {
+				buf_data[t[i+1].end] = '\0';
+				memset(user_info.netmask,0,16);
+				int len = mymin(16,t[i+1].end-t[i+1].start);
+				strncpy(user_info.netmask,&buf_data[t[i+1].start],len);
+				i++;
+				continue;
+			}
 			if (jsoneq(buf_data, &t[i], "Timezone") == 0) {
 				user_info.zone = atoi(&buf_data[t[i+1].start]);
 				i++;
@@ -85,9 +93,15 @@ httpd_post_receive_data(void *connection, struct pbuf *p)
 				continue;
 			}
 		}
+		//setIPaddr
 		ip4_addr_t add;
 		inet_aton(user_info.ip, &add);
 		setIP(add.addr);
+		//setNetMask
+		ip4_addr_t mask;
+		inet_aton(user_info.netmask, &mask);
+		setNetmask(mask.addr);
+
         clearFlash();
         int offset=0;
         WriteDeviceAddressOffset((char*) &user_info, sizeof(user_info), offset);

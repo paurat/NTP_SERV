@@ -22,6 +22,7 @@ struct user_info {
 	char ip[16];
 	int zone;
 	char contacts[INFOLEN];
+	char netmask[16];
 } user_info;
 
 struct Time_rx

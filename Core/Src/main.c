@@ -1345,9 +1345,13 @@ void StartDefaultTask(void const * argument)
 	tcpecho_init();
 
 
-	  ip4_addr_t add;
-	  inet_aton(user_info.ip, &add);
-	  setIP(add.addr);
+//	  ip4_addr_t add;
+//	  inet_aton(user_info.ip, &add);
+//	  setIP(add.addr);
+
+//	ip4_addr_t mask;
+//	inet_aton(user_info.netmask, &mask);
+//	setNetmask(mask.addr);
 	/* Infinite loop */
 	for(;;)
 	{
