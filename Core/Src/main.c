@@ -882,6 +882,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Alternate = GPIO_AF7_USART1;
   HAL_GPIO_Init(VCP_TX_GPIO_Port, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : Button_Pin */
+  GPIO_InitStruct.Pin = Button_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(Button_GPIO_Port, &GPIO_InitStruct);
+
   /*Configure GPIO pin : ARDUINO_PWM_D10_Pin */
   GPIO_InitStruct.Pin = ARDUINO_PWM_D10_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -1352,10 +1358,35 @@ void StartDefaultTask(void const * argument)
 	ip4_addr_t mask;
 	inet_aton(user_info.netmask, &mask);
 	setNetmask(mask.addr);
+	int IPres=0;
 	/* Infinite loop */
 	for(;;)
 	{
+
 		HAL_UART_Receive_IT (&huart7, (uint8_t*)&buff, 1);
+
+		if(HAL_GPIO_ReadPin (GPIOI, Button_Pin)){
+			IPres=IPres+1;
+		}
+		else
+		{
+			HAL_GPIO_WritePin(Led_GPIO_Port, Led_Pin,GPIO_PIN_RESET);
+			if(IPres>5){
+				memset(&user_info,0,sizeof(user_info));
+				strncpy(user_info.ip,"192.168.0.55",13);
+				strncpy(user_info.netmask,"255.255.255.0",14);
+				//setIPaddr
+				ip4_addr_t add;
+				inet_aton(user_info.ip, &add);
+				setIP(add.addr);
+				//setNetMask
+				ip4_addr_t mask;
+				inet_aton(user_info.netmask, &mask);
+				setNetmask(mask.addr);
+			}
+			IPres=0;
+
+		}
 		//HAL_GPIO_TogglePin(Led_GPIO_Port, Led1_Pin);
 		HAL_GPIO_TogglePin(Led_GPIO_Port, Led_Pin);
 		//HAL_UART_Receive(&huart7, (uint8_t*)RXstr, MESsize, 1000);

@@ -208,7 +208,7 @@ uint32_t crc32b(uint8_t *message, size_t size) {
 
 /*******************************************************************************
                        LL Driver Interface ( LwIP stack --> ETH)
- *******************************************************************************/
+*******************************************************************************/
 /**
  * In this function, the hardware should be initialized.
  * Called from ethernetif_init().
@@ -223,7 +223,7 @@ static void low_level_init(struct netif *netif)
 
 /* Init ETH */
 
-  uint8_t MACAddr[6] ;
+   uint8_t MACAddr[6] ;
   heth.Instance = ETH;
   heth.Init.AutoNegotiation = ETH_AUTONEGOTIATION_ENABLE;
   heth.Init.Speed = ETH_SPEED_100M;
