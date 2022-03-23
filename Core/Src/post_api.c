@@ -12,6 +12,7 @@
 		_a < _b ? _a : _b; })
 static void *current_connection;
 static void *valid_connection;
+int post_offset=0;
 //static char last_user[USER_PASS_BUFSIZE];
 
 char buf_data[USER_PASS_BUFSIZE];
@@ -26,6 +27,8 @@ static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
 err_t
 httpd_post_begin(void *connection, const char *uri, const char *http_request, u16_t http_request_len, int content_len, char *response_uri, u16_t response_uri_len, u8_t *post_auto_wnd)
 {
+	post_offset=0;
+
 	memset(buf_data,0,sizeof(buf_data));
 	LWIP_UNUSED_ARG(connection);
 	LWIP_UNUSED_ARG(http_request);
@@ -54,8 +57,25 @@ httpd_post_receive_data(void *connection, struct pbuf *p)
 {
 	err_t ret;
 
+	if ((post_offset+p->len) <= USER_PASS_BUFSIZE){
+		strncpy(buf_data+post_offset, p->payload,p->len);
+	}
+	else{
+		ret = ERR_VAL;
+		pbuf_free(p);
+		return ret;
+	}
+	post_offset += p->len;
+
+	int data_len = strlen(buf_data);
+	if (buf_data[data_len-1]!=']'){
+		ret = ERR_OK;
+		pbuf_free(p);
+		return ret;
+	}
+
 	LWIP_ASSERT("NULL pbuf", p != NULL);
-	strncpy(buf_data, p->payload, p->len);
+
 	if (current_connection == connection) {
 		jsmn_parser parser;
 		jsmntok_t t[512]; /* We expect no more than 512 JSON tokens */
