@@ -173,7 +173,7 @@ typedef struct {
 ntpd_status_t ntpd_status = {
   .status = NTPD_IN_LOCK,
   .requests_count = 0,
-  .stratum = 16
+  .stratum = 1
 };
 //RTCDateTime ntpd_datetime;
 
@@ -1373,7 +1373,7 @@ void StartDefaultTask(void const * argument)
 			HAL_GPIO_WritePin(Led_GPIO_Port, Led_Pin,GPIO_PIN_RESET);
 			if(IPres>5){
 				memset(&user_info,0,sizeof(user_info));
-				strncpy(user_info.ip,"192.168.0.55",13);
+				strncpy(user_info.ip,"192.168.0.68",13);
 				strncpy(user_info.netmask,"255.255.255.0",14);
 				//setIPaddr
 				ip4_addr_t add;
