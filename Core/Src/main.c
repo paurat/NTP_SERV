@@ -79,7 +79,7 @@ void tcpecho_init(void);
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_USART6_UART_Init(void);
+//static void MX_USART6_UART_Init(void);
 static void MX_UART7_Init(void);
 static void MX_RTC_Init(void);
 void StartDefaultTask(void const * argument);
@@ -244,7 +244,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USART6_UART_Init();
+ // MX_USART6_UART_Init();
   MX_UART7_Init();
   MX_RTC_Init();
   /* USER CODE BEGIN 2 */
@@ -503,36 +503,36 @@ static void MX_UART7_Init(void)
   * @param None
   * @retval None
   */
-static void MX_USART6_UART_Init(void)
-{
-
-  /* USER CODE BEGIN USART6_Init 0 */
-
-  /* USER CODE END USART6_Init 0 */
-
-  /* USER CODE BEGIN USART6_Init 1 */
-	__HAL_UART_ENABLE_IT(&huart7, UART_IT_RXNE);
-	__HAL_UART_ENABLE_IT(&huart7, UART_IT_IDLE);
-  /* USER CODE END USART6_Init 1 */
-  huart6.Instance = USART6;
-  huart6.Init.BaudRate = 9600;
-  huart6.Init.WordLength = UART_WORDLENGTH_8B;
-  huart6.Init.StopBits = UART_STOPBITS_1;
-  huart6.Init.Parity = UART_PARITY_NONE;
-  huart6.Init.Mode = UART_MODE_TX_RX;
-  huart6.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart6.Init.OverSampling = UART_OVERSAMPLING_16;
-  huart6.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-  huart6.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-  if (HAL_UART_Init(&huart6) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN USART6_Init 2 */
-
-  /* USER CODE END USART6_Init 2 */
-
-}
+//static void MX_USART6_UART_Init(void)
+//{
+//
+//  /* USER CODE BEGIN USART6_Init 0 */
+//
+//  /* USER CODE END USART6_Init 0 */
+//
+//  /* USER CODE BEGIN USART6_Init 1 */
+//	__HAL_UART_ENABLE_IT(&huart7, UART_IT_RXNE);
+//	__HAL_UART_ENABLE_IT(&huart7, UART_IT_IDLE);
+//  /* USER CODE END USART6_Init 1 */
+//  huart6.Instance = USART6;
+//  huart6.Init.BaudRate = 9600;
+//  huart6.Init.WordLength = UART_WORDLENGTH_8B;
+//  huart6.Init.StopBits = UART_STOPBITS_1;
+//  huart6.Init.Parity = UART_PARITY_NONE;
+//  huart6.Init.Mode = UART_MODE_TX_RX;
+//  huart6.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+//  huart6.Init.OverSampling = UART_OVERSAMPLING_16;
+//  huart6.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+//  huart6.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+//  if (HAL_UART_Init(&huart6) != HAL_OK)
+//  {
+//    Error_Handler();
+//  }
+//  /* USER CODE BEGIN USART6_Init 2 */
+//
+//  /* USER CODE END USART6_Init 2 */
+//
+//}
 
 /**
   * @brief GPIO Initialization Function
@@ -1209,7 +1209,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 		if( dataTransmitted != 0 ) {
 
-			HAL_UART_Transmit_IT(&huart6, (uint8_t *)buff, 1);
+			//HAL_UART_Transmit_IT(&huart6, (uint8_t *)buff, 1);
 
 			dataReceived=0;
 			dataTransmitted=0;
@@ -1223,16 +1223,16 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 
-	if(huart == &huart6) {
+	//if(huart == &huart6) {
 
 		dataTransmitted=1;
 
 		if( dataReceived != 0 ) {
-			HAL_UART_Transmit_IT(&huart6, (uint8_t *)buff, 1);
+			//HAL_UART_Transmit_IT(&huart6, (uint8_t *)buff, 1);
 			dataReceived=0;
 			dataTransmitted=0;
 		}
-	}
+	//}
 }
 
 char Hex_to_dec(char hex[2]){
