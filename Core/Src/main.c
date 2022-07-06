@@ -66,7 +66,6 @@
 RTC_HandleTypeDef hrtc;
 
 UART_HandleTypeDef huart7;
-UART_HandleTypeDef huart6;
 
 osThreadId defaultTaskHandle;
 osThreadId myTask02Handle;
@@ -79,7 +78,6 @@ void tcpecho_init(void);
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-//static void MX_USART6_UART_Init(void);
 static void MX_UART7_Init(void);
 static void MX_RTC_Init(void);
 void StartDefaultTask(void const * argument);
@@ -244,7 +242,6 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
- // MX_USART6_UART_Init();
   MX_UART7_Init();
   MX_RTC_Init();
   /* USER CODE BEGIN 2 */
@@ -390,10 +387,8 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_USART6
-                              |RCC_PERIPHCLK_UART7;
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_UART7;
   PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
-  PeriphClkInitStruct.Usart6ClockSelection = RCC_USART6CLKSOURCE_PCLK2;
   PeriphClkInitStruct.Uart7ClockSelection = RCC_UART7CLKSOURCE_PCLK1;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {
@@ -497,42 +492,6 @@ static void MX_UART7_Init(void)
   /* USER CODE END UART7_Init 2 */
 
 }
-
-/**
-  * @brief USART6 Initialization Function
-  * @param None
-  * @retval None
-  */
-//static void MX_USART6_UART_Init(void)
-//{
-//
-//  /* USER CODE BEGIN USART6_Init 0 */
-//
-//  /* USER CODE END USART6_Init 0 */
-//
-//  /* USER CODE BEGIN USART6_Init 1 */
-//	__HAL_UART_ENABLE_IT(&huart7, UART_IT_RXNE);
-//	__HAL_UART_ENABLE_IT(&huart7, UART_IT_IDLE);
-//  /* USER CODE END USART6_Init 1 */
-//  huart6.Instance = USART6;
-//  huart6.Init.BaudRate = 9600;
-//  huart6.Init.WordLength = UART_WORDLENGTH_8B;
-//  huart6.Init.StopBits = UART_STOPBITS_1;
-//  huart6.Init.Parity = UART_PARITY_NONE;
-//  huart6.Init.Mode = UART_MODE_TX_RX;
-//  huart6.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-//  huart6.Init.OverSampling = UART_OVERSAMPLING_16;
-//  huart6.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-//  huart6.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-//  if (HAL_UART_Init(&huart6) != HAL_OK)
-//  {
-//    Error_Handler();
-//  }
-//  /* USER CODE BEGIN USART6_Init 2 */
-//
-//  /* USER CODE END USART6_Init 2 */
-//
-//}
 
 /**
   * @brief GPIO Initialization Function
@@ -901,6 +860,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_EVT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(LCD_INT_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : ARDUINO_RX_D0_Pin ARDUINO_TX_D1_Pin */
+  GPIO_InitStruct.Pin = ARDUINO_RX_D0_Pin|ARDUINO_TX_D1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF8_USART6;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : ULPI_NXT_Pin */
   GPIO_InitStruct.Pin = ULPI_NXT_Pin;
