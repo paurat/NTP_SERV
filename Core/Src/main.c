@@ -117,10 +117,10 @@ int dataReceived=1;
 int dataTransmitted=1;
 char year_str[2]={0};
 int century=100;
-//_______________________________0_______1_______2________3_______4______5_______6_______7_______8_______9______10______11_____12_____13___14____15____16_____17______18_____19______20_____21______22_____23_____24_____25_____26_____27______28_____29______30_____31_____32_____33_____34_____35_____36_____37
-//int offset_minutes[]={         0,      0,      0,     -30,      0,     0,      0,      0,      0,      0,    -30,      0,     0,     0,   0,    0,    0,     0,     30,     0,     30,     0,     30,    45,     0,    30,     0,     0,     45,     0,     30,     0,    30,     0,     0,    45,     0,     0};
-//int offset_hours[]={         -12,    -11,    -10,      -9,     -9,    -8,     -7,     -6,     -5,     -4,     -3,     -3,    -2,    -1,   0,    1,    2,     3,      3,     4,      4,     5,      5,     5,     6,     6,     7,     8,      8,     9,      9,    10,    10,    11,    12,    12,    13,    14};
-const int offset_unix[]={   -43200, -39600, -36000,  -34200, -32400, -2800, -25200, -21600, -18000, -14400, -12600, -10800, -7200, -3600,   0, 3600, 7200, 10800,  12600, 14400,  16200, 18000,  19800, 20700, 21600, 23400, 25200, 28800,  31500, 32400,  34200, 36000, 37800, 39600, 43200, 45900, 46800, 50400};
+//_______________________________0_______1_______2________3_______4______5_______6_______7_______8_______9______10______11_____12_____13___14____15____16_____17______18_____19______20_____21______22_____23_____24_____25_____26_____27______28_____29______30
+//int offset_minutes[]={         0,      0,      0,       0,      0,     0,      0,      0,    -30,      0,      0,      0,     0,     0,   0,    0,   30,     0,      0,    30,      0,    30,      0,     0,     0,    30,     0,     0,      0,     0,      0 };
+//int offset_hours[]={         -11,    -10,     -9,      -8,     -7,    -6,     -5,     -4,     -3,      3,     -2,     -1,     0,     1,   2,    3,    3,     4,      5,     5,      6,     6,      7,     8,     9,     9,    10,    11,     12,    13,     14 };
+const int offset_unix[]={   -39600, -36000, -32400,  -28800, -25200,-21600, -18000, -14400, -12600, -10800,  -7200,  -3600,     0, -3600,7200,10800,12600, 14400,  18000, 19800,  21600, 23400,  25200, 28800, 32400, 34200, 36000, 39600,  43200, 46800,  50400};
 struct tm Time_calc;
 
 typedef struct
@@ -519,10 +519,10 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(OTG_FS_PowerSwitchOn_GPIO_Port, OTG_FS_PowerSwitchOn_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOI, ARDUINO_D7_Pin|ARDUINO_D8_Pin|Led_Pin|Led1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LCD_BL_CTRL_GPIO_Port, LCD_BL_CTRL_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LCD_BL_CTRL_GPIO_Port, LCD_BL_CTRL_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(Led_GPIO_Port, Led_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LCD_DISP_GPIO_Port, LCD_DISP_Pin, GPIO_PIN_SET);
@@ -746,15 +746,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Alternate = GPIO_AF13_DCMI;
   HAL_GPIO_Init(DCMI_D5_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : ARDUINO_D7_Pin ARDUINO_D8_Pin Led_Pin LCD_DISP_Pin
-                           Led1_Pin */
-  GPIO_InitStruct.Pin = ARDUINO_D7_Pin|ARDUINO_D8_Pin|Led_Pin|LCD_DISP_Pin
-                          |Led1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
-
   /*Configure GPIO pin : uSD_Detect_Pin */
   GPIO_InitStruct.Pin = uSD_Detect_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
@@ -815,6 +806,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : Led_Pin LCD_DISP_Pin */
+  GPIO_InitStruct.Pin = Led_Pin|LCD_DISP_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
 
   /*Configure GPIO pin : DCMI_PWR_EN_Pin */
   GPIO_InitStruct.Pin = DCMI_PWR_EN_Pin;
@@ -1190,7 +1188,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 
-	//if(huart == &huart6) {
+//	//if(huart == &huart6) {
 
 		dataTransmitted=1;
 

@@ -64,8 +64,11 @@ int fs_open_custom(struct fs_file *file, const char *name){
 			offset = sprintf(generated_html,"%02d:%02d:%02d %02d.%02d.%04d",Hours,Minutes,Seconds,Date,Month,Year);
 		}
 		else if (gps.year[0]=='V') {
-			offset = sprintf(generated_html,"no Reference Timestamp");
+			offset = sprintf(generated_html,"no Reference Time");
 		}
+//		else if (gps.year[0]=='') {
+//					offset = sprintf(generated_html,"no Reference Timestamp");
+//				}
 	}
 
 	if (offset>0){
