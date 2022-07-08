@@ -84,8 +84,6 @@ void Error_Handler(void);
 #define Led_GPIO_Port GPIOI
 #define RCC_OSC32_IN_Pin GPIO_PIN_14
 #define RCC_OSC32_IN_GPIO_Port GPIOC
-#define DCMI_PWR_EN_Pin GPIO_PIN_13
-#define DCMI_PWR_EN_GPIO_Port GPIOH
 #define RCC_OSC32_OUT_Pin GPIO_PIN_15
 #define RCC_OSC32_OUT_GPIO_Port GPIOC
 #define Button_Pin GPIO_PIN_11
@@ -94,10 +92,6 @@ void Error_Handler(void);
 #define OSC_25M_GPIO_Port GPIOH
 #define ULPI_NXT_Pin GPIO_PIN_4
 #define ULPI_NXT_GPIO_Port GPIOH
-#define ARDUINO_D4_Pin GPIO_PIN_7
-#define ARDUINO_D4_GPIO_Port GPIOG
-#define ARDUINO_D2_Pin GPIO_PIN_6
-#define ARDUINO_D2_GPIO_Port GPIOG
 #define ULPI_D6_Pin GPIO_PIN_13
 #define ULPI_D6_GPIO_Port GPIOB
 #define ULPI_D5_Pin GPIO_PIN_12
@@ -110,8 +104,6 @@ void Error_Handler(void);
 #define ULPI_DIR_GPIO_Port GPIOC
 #define EXT_RST_Pin GPIO_PIN_3
 #define EXT_RST_GPIO_Port GPIOG
-#define RMII_RXER_Pin GPIO_PIN_2
-#define RMII_RXER_GPIO_Port GPIOG
 #define RMII_REF_CLK_Pin GPIO_PIN_1
 #define RMII_REF_CLK_GPIO_Port GPIOA
 #define RMII_RXD0_Pin GPIO_PIN_4
