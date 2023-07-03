@@ -954,6 +954,7 @@ void StartDefaultTask(void const * argument)
 		HAL_UART_Receive_IT (&huart7, (uint8_t*)&buff, 1);
 
 		if(HAL_GPIO_ReadPin (GPIOI, Button_Pin)){
+
 			IPres=IPres+1;
 		}
 		else
@@ -963,6 +964,7 @@ void StartDefaultTask(void const * argument)
 				memset(&user_info,0,sizeof(user_info));
 				strncpy(user_info.ip,"192.168.0.68",13);
 				strncpy(user_info.netmask,"255.255.255.0",14);
+				user_info.zone=12;
 				//setIPaddr
 				ip4_addr_t add;
 				inet_aton(user_info.ip, &add);

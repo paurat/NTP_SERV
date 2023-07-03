@@ -5,9 +5,9 @@ main.c:812:6:HAL_UART_TxCpltCallback	0	static
 main.c:826:6:Hex_to_dec	56	static
 main.c:861:6:calc_crc	16	static
 main.c:890:8:rtc_read	72	static
-main.c:995:6:tcpecho_thread	48	static
+main.c:997:6:tcpecho_thread	48	static
 main.c:608:6:HAL_UART_RxCpltCallback	56	static,ignoring_inline_asm
 main.c:919:6:tcpecho_init	16	static
 main.c:932:6:StartDefaultTask	40	static
-main.c:1088:6:HAL_TIM_PeriodElapsedCallback	0	static
-main.c:1105:6:Error_Handler	0	static,ignoring_inline_asm
+main.c:1090:6:HAL_TIM_PeriodElapsedCallback	0	static
+main.c:1107:6:Error_Handler	0	static,ignoring_inline_asm
