@@ -185,7 +185,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
-	memset(gps.day,0,sizeof(gps));
+	memset(&gps,0,sizeof(gps));
 	// ZDA-38;RMC-68
 
 
@@ -790,6 +790,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 				year_str[1]=time_buff[5];
 			}
 		}
+
 		//printf("buff=%c\tcount=%d\tzpt=%d\tind=%d\tTipe_Mes=%d\n\r",buff[0],count,zpt,ind,Tipe_Mes);
 		//printf("crc_hx=%s\t crc=%d\t crc_buff=%s\t dec=%d\n\r",crc_hx,crc,crc_buff,dec);
 		dataReceived=1;
@@ -918,7 +919,7 @@ time_t rtc_read(void) {
 
 void tcpecho_init(void)
 {
-	sys_thread_new("tcpecho_thread", tcpecho_thread, NULL,DEFAULT_THREAD_STACKSIZE, 1);
+	//sys_thread_new("tcpecho_thread", tcpecho_thread, NULL,DEFAULT_THREAD_STACKSIZE, 1);
 }
 /* USER CODE END 4 */
 
@@ -996,7 +997,7 @@ void tcpecho_thread(void const * argument)
 {
   /* USER CODE BEGIN tcpecho_thread */
   /* Infinite loop */
-	{
+	while(1){
 		struct netconn *conn;
 		err_t err,recv_err;
 		struct netbuf *buf;
