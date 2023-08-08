@@ -919,7 +919,7 @@ time_t rtc_read(void) {
 
 void tcpecho_init(void)
 {
-	//sys_thread_new("tcpecho_thread", tcpecho_thread, NULL,DEFAULT_THREAD_STACKSIZE, 1);
+	sys_thread_new("tcpecho_thread", tcpecho_thread, NULL,DEFAULT_THREAD_STACKSIZE, 1);
 }
 /* USER CODE END 4 */
 
@@ -997,7 +997,6 @@ void tcpecho_thread(void const * argument)
 {
   /* USER CODE BEGIN tcpecho_thread */
   /* Infinite loop */
-	while(1){
 		struct netconn *conn;
 		err_t err,recv_err;
 		struct netbuf *buf;
@@ -1074,7 +1073,7 @@ void tcpecho_thread(void const * argument)
 				netconn_delete(conn);
 			}
 		}
-	}
+
   /* USER CODE END tcpecho_thread */
 }
 
