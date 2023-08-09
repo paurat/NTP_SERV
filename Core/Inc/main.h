@@ -114,6 +114,8 @@ void Error_Handler(void);
 #define ULPI_CLK_GPIO_Port GPIOA
 #define RMII_RXD1_Pin GPIO_PIN_5
 #define RMII_RXD1_GPIO_Port GPIOC
+#define Timled_Pin GPIO_PIN_6
+#define Timled_GPIO_Port GPIOH
 #define ULPI_D0_Pin GPIO_PIN_3
 #define ULPI_D0_GPIO_Port GPIOA
 #define RMII_CRS_DV_Pin GPIO_PIN_7
