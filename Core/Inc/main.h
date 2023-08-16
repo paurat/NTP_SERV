@@ -84,6 +84,9 @@ void Error_Handler(void);
 #define Led_GPIO_Port GPIOI
 #define RCC_OSC32_IN_Pin GPIO_PIN_14
 #define RCC_OSC32_IN_GPIO_Port GPIOC
+#define PPS_Pin GPIO_PIN_0
+#define PPS_GPIO_Port GPIOI
+#define PPS_EXTI_IRQn EXTI0_IRQn
 #define RCC_OSC32_OUT_Pin GPIO_PIN_15
 #define RCC_OSC32_OUT_GPIO_Port GPIOC
 #define Button_Pin GPIO_PIN_11

@@ -112,6 +112,8 @@ int ind=0;
 int crc=0;
 int count=0;
 int dec;
+int PPS_count=0;//вынес для проверки
+int PPS_mass[10]={0};//вынес для проверки
 int crc_pars=0;
 char time_buff[9]={0};
 char crc_buff[3]={0};
@@ -485,7 +487,7 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 1 */
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 3999;
+  htim1.Init.Prescaler = 7999;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim1.Init.Period = 49999;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -623,6 +625,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(Led_GPIO_Port, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : PPS_Pin */
+  GPIO_InitStruct.Pin = PPS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(PPS_GPIO_Port, &GPIO_InitStruct);
+
   /*Configure GPIO pin : Button_Pin */
   GPIO_InitStruct.Pin = Button_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
@@ -667,9 +675,28 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(Timled_GPIO_Port, &GPIO_InitStruct);
 
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+	if(GPIO_Pin == PPS_Pin) {
+	PPS_mass[PPS_count] = (TIM1->CNT);
+	PPS_count=PPS_count+1;
+		if(PPS_count==10){
+			HAL_GPIO_TogglePin(Timled_GPIO_Port, Timled_Pin);
+
+		}
+		TIM1->CNT = 0;//обнуление счетчика
+
+
+		}
+	}
+
+}
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	RTC_TimeTypeDef sTime = {0};
 	RTC_DateTypeDef sDate = {0};
@@ -1051,6 +1078,8 @@ void StartDefaultTask(void const * argument)
 		HAL_Delay(1000);
 		//HAL_Delay(1000);
 	}
+
+
   /* USER CODE END 5 */
 }
 
@@ -1156,11 +1185,11 @@ void tcpecho_thread(void const * argument)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
-    if(htim->Instance == TIM1) //check if the interrupt comes from TIM1
-    {
-            HAL_GPIO_TogglePin(Timled_GPIO_Port, Timled_Pin);
-            //200 МГц APB2
-    }
+//    if(htim->Instance == TIM1) //check if the interrupt comes from TIM1
+//    {
+//            HAL_GPIO_TogglePin(Timled_GPIO_Port, Timled_Pin);
+//            //200 МГц APB2
+//   }
   /* USER CODE END Callback 0 */
   if (htim->Instance == TIM6) {
     HAL_IncTick();
