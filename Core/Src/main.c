@@ -683,20 +683,25 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+	int PPS_Counter_period=0;
 	if(GPIO_Pin == PPS_Pin) {
-	PPS_mass[PPS_count] = (TIM1->CNT);
-	PPS_count=PPS_count+1;
-		if(PPS_count==10){
+		if(PPS_count>2&&PPS_count<12){
+		PPS_mass[PPS_count-2] = TIM1->CNT;
+		}
+		if(PPS_count==12){
 			HAL_GPIO_TogglePin(Timled_GPIO_Port, Timled_Pin);
-
+			PPS_Counter_period=(PPS_mass[0]+PPS_mass[1]+PPS_mass[2]+PPS_mass[3]+PPS_mass[4]+PPS_mass[5]+PPS_mass[6]+PPS_mass[7]+PPS_mass[8]+PPS_mass[9])/10;
+			TIM1->ARR=PPS_Counter_period;
+			PPS_count=0;
+		}
+	}
+	if(PPS_count<12){
+		PPS_count=PPS_count+1;
 		}
 		TIM1->CNT = 0;//обнуление счетчика
 
 
 		}
-	}
-
-}
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	RTC_TimeTypeDef sTime = {0};
 	RTC_DateTypeDef sDate = {0};
