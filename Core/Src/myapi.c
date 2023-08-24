@@ -33,7 +33,7 @@ int fs_open_custom(struct fs_file *file, const char *name){
 		RTC_TimeTypeDef timeStruct;
 
 		//hrtc.Instance = RTC;
-		if (gps.year[0]!='V'){
+		if (gps.year[0]!='V'&&PPS_count>12){
 			// Read actual date and time
 			HAL_RTC_GetTime(&hrtc, &timeStruct, FORMAT_BIN); // Read time first!
 			HAL_RTC_GetDate(&hrtc, &dateStruct, FORMAT_BIN);
@@ -63,7 +63,7 @@ int fs_open_custom(struct fs_file *file, const char *name){
 
 			offset = sprintf(generated_html,"%02d:%02d:%02d %02d.%02d.%04d",Hours,Minutes,Seconds,Date,Month,Year);
 		}
-		else if (gps.year[0]=='V') {
+		else if (gps.year[0]=='V'||PPS_count<13) {
 			offset = sprintf(generated_html,"no reference time");
 		}
 //		else if (gps.year[0]=='') {

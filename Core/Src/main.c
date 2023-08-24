@@ -255,7 +255,8 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim1);
 
   HAL_Delay(5000);
-  //ON ZDA
+
+ //ON ZDA
   HAL_UART_Transmit(&huart7,(uint8_t*) MESZDA, 16, 1000);
   HAL_Delay(100);
   HAL_UART_Transmit(&huart7,(uint8_t*) CONZDA, 10, 1000);
@@ -297,6 +298,8 @@ int main(void)
   int offset =0;
  ReadDeviceAddressOffset((char*) &user_info, sizeof(user_info), offset);
  offset+=sizeof(user_info);
+ //Обнуление PPS
+ PPS_count=0;
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -684,6 +687,8 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 	int PPS_Counter_period=0;
+	//int PPS_count=0;//вынес для проверки
+	//int PPS_mass[10]={0};//вынес для проверки
 	if(GPIO_Pin == PPS_Pin) {
 		if(PPS_count>2&&PPS_count<12){
 		PPS_mass[PPS_count-2] = TIM1->CNT;
@@ -692,13 +697,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 			HAL_GPIO_TogglePin(Timled_GPIO_Port, Timled_Pin);
 			PPS_Counter_period=(PPS_mass[0]+PPS_mass[1]+PPS_mass[2]+PPS_mass[3]+PPS_mass[4]+PPS_mass[5]+PPS_mass[6]+PPS_mass[7]+PPS_mass[8]+PPS_mass[9])/10;
 			TIM1->ARR=PPS_Counter_period;
-			PPS_count=0;
 		}
 	}
-	if(PPS_count<12){
+	if(PPS_count<13){
 		PPS_count=PPS_count+1;
-		}
 		TIM1->CNT = 0;//обнуление счетчика
+		}
+
 
 
 		}
