@@ -696,7 +696,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 		}
 		if(PPS_count==12){
 			HAL_GPIO_TogglePin(Timled_GPIO_Port, Timled_Pin);
-			PPS_Counter_period=(PPS_mass[0]+PPS_mass[1]+PPS_mass[2]+PPS_mass[3]+PPS_mass[4]+PPS_mass[5]+PPS_mass[6]+PPS_mass[7]+PPS_mass[8]+PPS_mass[9])/10;
+			PPS_Counter_period=(PPS_mass[0]+PPS_mass[1]+PPS_mass[2]+PPS_mass[3]+PPS_mass[4]+PPS_mass[5]+PPS_mass[6]+PPS_mass[7]+PPS_mass[8]+PPS_mass[9])/9;
 			TIM1->ARR=PPS_Counter_period;
 		}
 	}
@@ -704,7 +704,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 		PPS_count=PPS_count+1;
 		TIM1->CNT = 0;//обнуление счетчика
 		}
-
 
 
 		}
@@ -1158,7 +1157,7 @@ void tcpecho_thread(void const * argument)
 							//rtcConvertDateTimeToStructTm(&ntpd_datetime, &tm_, &tm_ms_);
 
 							ntp_packet_ptr->rxTm_s = htonl(rtc_read()- DIFF_SEC_1970_2036);//htonl(mktime(&tm_) - DIFF_SEC_1970_2036);
-							ntp_packet_ptr->rxTm_f = 0;//htonl((NTP_MS_TO_FS_U32 * tm_ms_));
+							ntp_packet_ptr->rxTm_f = htonl((time_t)(((float)TIM1->CNT)/((float)TIM1->ARR)*4294967296.0));//htonl((NTP_MS_TO_FS_U32 * tm_ms_));
 
 							/* Copy into transmit timestamp fields */
 							ntp_packet_ptr->txTm_s = ntp_packet_ptr->rxTm_s;
