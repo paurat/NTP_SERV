@@ -300,6 +300,7 @@ int main(void)
  offset+=sizeof(user_info);
  //Обнуление PPS
  PPS_count=0;
+ gps.year[0]='V';
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
